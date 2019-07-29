@@ -1,0 +1,16 @@
+{
+  "name": "analysis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cli-progress": "^2.1.1",
+    "mongodb": "^3.3.0-beta2",
+    "web3": "^1.2.0"
+  }
+}
