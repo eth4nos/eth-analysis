@@ -32,3 +32,9 @@ $ node main.js
 ```
 $ node countActiveAccounts.js
 ```
+
+* Visualize with web
+```
+$ ./run.sh
+```
+Then you can see the result at <http://localhost:3000/>

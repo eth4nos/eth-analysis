@@ -14,7 +14,7 @@ router.get('/data', async (req, res, next) => {
 
   let sources = [
     { id: 'total', values: data.map((row) => {
-      return { number: row.number, value: row.total  + 8894 }
+      return { number: row.number, value: row.total }
     })},
     { id: 'active', values: data.map((row) => {
       return { number: row.number, value: row.active }
