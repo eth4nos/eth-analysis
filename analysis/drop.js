@@ -1,4 +1,4 @@
-const {drop}  = require('./mongoAPIs');
+const {drop, dropIndexes}  = require('./mongoAPIs');
 
 (async () => {
     try {
@@ -7,6 +7,8 @@ const {drop}  = require('./mongoAPIs');
         // await drop('transactions');
         await drop('accounts');
         await drop('activeAccounts');
+        // await dropIndexes('accounts');
+        // await dropIndexes('activeAccounts');
     } catch (err) {
         console.error(err);
     }

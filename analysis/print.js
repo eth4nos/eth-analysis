@@ -1,4 +1,4 @@
-const {insertOne, findOne, findLastOne, findMany, count}  = require('./mongoAPIs');
+const {insertOne, findOne, findLastOne, findMany, countDocuments}  = require('./mongoAPIs');
 
 (async () => {
     try {
@@ -20,24 +20,27 @@ const {insertOne, findOne, findLastOne, findMany, count}  = require('./mongoAPIs
         // let accounts = await findMany('accounts');
         // console.log(accounts);
 
+        // let account = await findOne('accounts', {number: 0});
+        // console.log(account);
+
         // let activeAccounts = await findMany('activeAccounts');
         // console.log(activeAccounts);
 
-        let lastActiveAccounts = await findLastOne('activeAccounts', {number: -1});
+        let lastActiveAccounts = await findLastOne('activeAccounts', { number: -1 });
         console.log(lastActiveAccounts);
 
         // let activeAccounts = await findOne('activeAccounts', {number: 1034});
         // console.log(activeAccounts);
 
-        let activeAccountCount = await count('accounts');
-        console.log(activeAccountCount)
+        // let activeAccountCount = await countDocuments('accounts');
+        // console.log(activeAccountCount)
 
         // for (let i = 0; i < 20; i++) {
         //     console.log(await findOne('activeAccounts', {number: i * 100000}));
         // }
 
-        // let lastAccounts = await findLastOne('accounts', {distance: -1});
-        // console.log(lastAccounts);
+        let lastAccounts = await findLastOne('accounts', { number: -1 });
+        console.log(lastAccounts);
 
     } catch (err) {
         return console.error(err);

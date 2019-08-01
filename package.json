@@ -13,6 +13,7 @@
     "morgan": "~1.9.1",
     "pug": "2.0.0-beta11",
     "mongodb": "^3.3.0-beta2",
-    "cli-progress": "^2.1.1"
+    "cli-progress": "^2.1.1",
+    "web3": "^1.0.0-beta.55"
   }
 }

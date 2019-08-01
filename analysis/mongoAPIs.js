@@ -31,7 +31,7 @@ function upsertOne(collectionName, id, data) {
         }
         const db = client.db(dbName);
         let collection = db.collection(collectionName);
-        let res = collection.update(data, id, {upsert: true});
+        let res = collection.update(id, { $set: data });
         // console.log(res);
         client.close();
         resolve(res)
@@ -153,7 +153,39 @@ function setIndex(collectionName, index, option) {
     });
 }
 
-function count(collectionName, option={}) {
+function dropIndex(collectionName, index, option) {
+    return new Promise(async (resolve, reject) => {
+        let client = await MongoClient.connect(url, { useNewUrlParser: true }).catch((e) => { console.error(e.message); reject(); });
+        if (!client) {
+            console.error("no client")
+            reject();
+        }
+        const db = client.db(dbName);
+        let collection = db.collection(collectionName);
+        let res = await collection.dropIndex(index).catch((e) => { console.error(e.message); reject(); });
+        console.log(res);
+        client.close();
+        resolve();
+    });
+}
+
+function dropIndexes(collectionName) {
+    return new Promise(async (resolve, reject) => {
+        let client = await MongoClient.connect(url, { useNewUrlParser: true }).catch((e) => { console.error(e.message); reject(); });
+        if (!client) {
+            console.error("no client")
+            reject();
+        }
+        const db = client.db(dbName);
+        let collection = db.collection(collectionName);
+        let res = await collection.dropIndexes().catch((e) => { console.error(e.message); reject(); });
+        console.log(res);
+        client.close();
+        resolve();
+    });
+}
+
+function countDocuments(collectionName, option={}) {
     return new Promise(async (resolve, reject) => {
         let client = await MongoClient.connect(url, { useNewUrlParser: true }).catch((e) => { console.error(e.message); reject(); });
         if (!client) {
@@ -163,10 +195,10 @@ function count(collectionName, option={}) {
         const db = client.db(dbName);
         let collection = db.collection(collectionName);
         let res = await collection.countDocuments().catch((e) => { console.error(e.message); reject(); });
-        console.log(res);
+        // console.log(res);
         client.close();
-        resolve();
+        resolve(res);
     });
 }
 
-module.exports = {insertOne, upsertOne, findOne, findLastOne, findMany, updateOne, remove, drop, setIndex, count}
+module.exports = {insertOne, upsertOne, findOne, findLastOne, findMany, updateOne, remove, drop, setIndex, dropIndex, dropIndexes, countDocuments}

@@ -1,4 +1,4 @@
-const {insertOne, upsertOne, findOne, findLastOne, findMany, updateOne, setIndex}  = require('./mongoAPIs');
+const {insertOne, upsertOne, findOne, findLastOne, findMany, updateOne, setIndex, countDocuments}  = require('./mongoAPIs');
 
 const { Bar, Presets } = require('cli-progress');
 
@@ -16,27 +16,44 @@ class Accounts {
         this.activeAccounts = []; // { account, lastBlockNum, puppet }
     }
 
-    upsert(address, blockNum, from, newbie) {
-        if (newbie) this.totalAccountSize++;
-        let accObj = this.activeAccounts.find(acc => {
-            return acc.address == address;
-        });
-        let puppet = false;
-        if (!newbie && !accObj) {
-            puppet = true;
-        }
-        if (accObj) {
-            accObj.lastBlockNum = blockNum;
-            if (from) {
-                puppet = false;
+    upsert(address, blockNum, to) {
+        return new Promise(async (resolve, reject) => {
+            // upsert account
+            let account = await findOne('accounts', { address: address });
+            if (account) {
+                let count = account.count;
+                let distance = (account.distance * count + blockNum - account.lastBlockNum) / (count + 1);
+                await updateOne('accounts', { address: address }, {
+                    lastBlockNum: blockNum,
+                    distance: distance,
+                    count: count + 1
+                });
+            } else {
+                await insertOne('accounts', {
+                    number: this.totalAccountSize++,
+                    address: address,
+                    lastBlockNum: blockNum,
+                    distance: 0,
+                    count: 1
+                });
             }
-        } else {
-            this.activeAccounts.push({
-                address: address,
-                lastBlockNum: blockNum,
-                puppet: puppet
+
+            // upsert active account
+            let activeAccount = this.activeAccounts.find(acc => {
+                return acc.address == address;
             });
-        }
+            if (activeAccount) {
+                activeAccount.lastBlockNum = blockNum;
+                if (!to) activeAccount.puppet = false;
+            } else {
+                this.activeAccounts.push({
+                    address: address,
+                    lastBlockNum: blockNum,
+                    puppet: account && to
+                });
+            }
+            resolve();
+        });
     }
 
     sweep(blockNum) {
@@ -75,12 +92,12 @@ var accounts = new Accounts();
 async function updateAccounts(number) {
     let block = await findOne('blocks', {number: number});
 
-    await updateAccount(block.miner, number, false);
+    await accounts.upsert(block.miner, number, true);
     for (let address of block.to) {
-        await updateAccount(address, number, false);
+        await accounts.upsert(address, number, true);
     }
     for (let address of block.from) {
-        await updateAccount(address, number, true);
+        await accounts.upsert(address, number, false);
     }
 
     accounts.sweep(number);
@@ -90,26 +107,5 @@ async function updateAccounts(number) {
         total: accounts.totalAccountSize,
         active: accounts.activeAccounts.length,
         puppet: accounts.getPuppetAccountLength()
-    })
-}
-
-async function updateAccount(address, number, from) {
-    let account = await findOne('accounts', { address: address });
-    if (account === undefined) {
-        await insertOne('accounts', {
-            address: address,
-            lastBlockNum: number,
-            distance: 0,
-            count: 1
-        });
-    } else {
-        let count = account.count;
-        let distance = (account.distance * count + number - account.lastBlockNum) / (count + 1);
-        await updateOne('accounts', { address: address }, {
-            lastBlockNum: number,
-            distance: distance,
-            count: count + 1
-        });
-    }
-    accounts.upsert(address, number, from, account === undefined)
+    });
 }

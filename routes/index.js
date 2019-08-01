@@ -9,7 +9,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/data', async (req, res, next) => {
-  let data = await findMany('activeAccounts', {number: { $lt: 1000000 } });
+  let data = await findMany('activeAccounts', { number: { $mod: [10, 0]} });
   // console.log(data);
 
   let sources = [
