@@ -6,18 +6,23 @@ var svg = d3.select("svg"),
 
 var color = d3.scaleOrdinal()
   .domain(["total", "active", "puppet"])
-  .range(["rgba(236, 226, 218, 1)", "rgba(156, 179, 182, 1)", "rgba(85, 114, 121, 1)"]);
+  .range(["rgba(236, 226, 218, 0.5)", "rgba(156, 179, 182, 0.5)", "rgba(85, 114, 121, 0.5)"]);
 
 var x = d3.scaleLinear().range([0, width]),
   y = d3.scaleLinear().range([height, 0]),
+  y2 = d3.scaleLinear().range([height, 0]),
   z = color;
 
 var area = d3.area()
-.curve(d3.curveMonotoneX)
-.x(d => { return x(d.number); })
-.y0(y(0))
-.y1(d => { return y(d.value); });
+  .curve(d3.curveMonotoneX)
+  .x(d => { return x(d.number); })
+  .y0(y(0))
+  .y1(d => { return y(d.value); });
 
+// Right Y-axis
+var valueline2 = d3.line()
+    .x(d => { return x(d.number); })
+    .y(d => { return y2(d.value); });
 
 d3.json("/data", (error, sources) => {
     if (error) throw error;
@@ -27,33 +32,66 @@ d3.json("/data", (error, sources) => {
     x.domain(d3.extent(sources[0]['values'], d => { return d.number; }));
     y.domain([
         0,
-        d3.max(sources, c => { return d3.max(c.values, d => { return d.value; }); })
+        d3.max(sources.slice(0, 3), c => { return d3.max(c.values, d => { return d.value; }); })
     ]);
-    z.domain(sources.map(c => { return c.id; }));
+    z.domain(sources.slice(0, 3).map(c => { return c.id; }));
+    y2.domain([
+      0,
+      d3.max(sources.slice(3), c => { return d3.max(c.values, d => { return d.value; }); })
+    ]);
 
     g.append("g")
-        .attr("class", "axis axis--x")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
 
     g.append("g")
-        .attr("class", "axis axis--y")
-        .call(d3.axisLeft(y))
-        .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", "0.71em")
-        .attr("fill", "#000")
-        .text("total, active, puppet");
+      .attr("class", "axis axis--y")
+      .call(d3.axisLeft(y))
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -10)
+      .attr("y", 10)
+      .attr("dy", "0.71em")
+      .attr("fill", "#000")
+      .text("total, active, puppet");
 
     var source = g.selectAll(".area")
-        .data(sources)
+        .data(sources.slice(0, 3))
         .enter().append("g")
         .attr("class", d => { return `area ${d.id}`; })
 
     source.append("path")
         .attr("d", d => { console.log(area(d.values)); return area(d.values); })
         .style("fill", d => { return z(d.id); });
+
+    // Add the valueline2 path.
+    g.selectAll(".line")
+      .data(sources.slice(3))
+      .enter()
+      .append("path")
+        .attr("fill", "none")
+        .attr("stroke", "rgba(233, 153, 144, 1)")
+        .attr("stroke-width", 1.5)
+        .attr("d", function(d){
+          return d3.line()
+            .x(function(d) { return x(d.number); })
+            .y(function(d) { return y2(+d.value); })
+            (d.values)
+        })
+
+    // Add the y2 axis
+    g.append("g")
+      .attr("class", "axis axis--y2")
+      .attr("transform", "translate( " + width + ", 0 )")
+      .call(d3.axisRight(y2))
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -55)
+      .attr("y", 36)
+      .attr("dy", "0.71em")
+      .attr("fill", "#000")
+      .text("active / total");
 });
 
 // var parseDate = d3.timeParse("%Y/%m/%d %H:%M");

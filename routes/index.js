@@ -9,7 +9,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/data', async (req, res, next) => {
-  let data = await findMany('activeAccounts', { number: { $mod: [10, 0]} });
+  let data = await findMany('activeAccounts', { number: { $mod: [100, 0]} });
   // console.log(data);
 
   let sources = [
@@ -21,6 +21,9 @@ router.get('/data', async (req, res, next) => {
     })},
     { id: 'puppet', values: data.map((row) => {
       return { number: row.number, value: row.puppet }
+    })},
+    { id: 'ratio', values: data.map((row) => {
+      return { number: row.number, value: row.active / row.total * 100 }
     })}
   ];
 
