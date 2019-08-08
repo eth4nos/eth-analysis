@@ -14,7 +14,7 @@ $ npm install
 
 * run mongoDB daemon
 ```
-$ mongod --dbpath {disk}
+# mongod --fork --logpath /var/log/mongodb.log --dbpath {dbpath} --bind_ip {0.0.0.0}
 ```
 
 * run go-ethereum client with fast sync mode
