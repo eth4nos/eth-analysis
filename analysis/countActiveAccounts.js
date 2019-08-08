@@ -1,4 +1,4 @@
-const {insertOne, upsertOne, findOne, findLastOne, findMany, updateOne, setIndex, countDocuments}  = require('./mongoAPIs');
+const {insertOne, insertMany, upsertOne, updateMany, findOne, findLastOne, findMany, remove, drop, setIndex, countDocuments}  = require('./mongoAPIs');
 
 const { Bar, Presets } = require('cli-progress');
 
@@ -12,75 +12,45 @@ const epoch  = 172800; // 1 month
 
 class Accounts {
     constructor() {
-        this.totalAccountSize = 0;
-        this.activeAccounts = []; // { account, lastBlockNum, puppet }
+        // this.activeAccounts = []; // { account, lastBlockNum, puppet }
+        this.ancientAccounts = 0;
+        this.activeAccounts = 0;
     }
 
-    upsert(address, blockNum, to) {
+    upsert(address, blockNum) {
         return new Promise(async (resolve, reject) => {
-            // upsert account
-            let account = await findOne('accounts', { address: address });
-            if (account) {
-                let count = account.count;
-                let distance = (account.distance * count + blockNum - account.lastBlockNum) / (count + 1);
-                await updateOne('accounts', { address: address }, {
-                    lastBlockNum: blockNum,
-                    distance: distance,
-                    count: count + 1
-                });
-            } else {
-                await insertOne('accounts', {
-                    number: this.totalAccountSize++,
-                    address: address,
-                    lastBlockNum: blockNum,
-                    distance: 0,
-                    count: 1
-                });
-            }
-
-            // upsert active account
-            let activeAccount = this.activeAccounts.find(acc => {
-                return acc.address == address;
+            await upsertOne('accounts', { address: address }, {
+                address: address,
+                lastBlockNum: blockNum,
+                active: true
             });
-            if (activeAccount) {
-                activeAccount.lastBlockNum = blockNum;
-                if (!to) activeAccount.puppet = false;
-            } else {
-                this.activeAccounts.push({
-                    address: address,
-                    lastBlockNum: blockNum,
-                    puppet: account && to
-                });
-            }
             resolve();
         });
     }
 
     sweep(blockNum) {
-        this.activeAccounts = this.activeAccounts.filter(account => {
-            return blockNum - account.lastBlockNum < epoch;
+        return new Promise(async (resolve, reject) => {
+            await updateMany('accounts', { $and: [{ active: true }, { lastBlockNum: { $lt: (blockNum - epoch) }}] }, { $set: { active: false }});
+            resolve();
         });
-    }
-
-    getPuppetAccountLength() {
-        return this.activeAccounts.filter(acc => {
-            return acc.puppet;
-        }).length;
     }
 }
 
 var accounts = new Accounts();
 
 (async function() {
-    let currentBlock = 0;
-    // activeAccounts {number, #totalAccounts, #activeAccounts, #puppetAccounts}
+    // countAccounts {number, #totalAccounts, #activeAccounts}
     // accounts {address, lastBlockNum, distance, count}
 
-    // console.log(`currentBlock: ${currentBlock}, Accounts: ${accountData.totalAccountSize}`);
-    //let latest = await getLatest();
-
     await setIndex('accounts', { address: 1 }, { unique: true });
-    await setIndex('activeAccounts', { number: 1 }, { unique: true });
+    await setIndex('countAccounts', { number: 1 }, { unique: true });
+
+    let currentBlock = 0;
+    let lastBlock = await findLastOne('countAccounts', { number: -1 });
+    if (lastBlock) currentBlock = lastBlock.number;
+    // await drop('activeAccounts');
+   
+    accounts.totalAccountSize = await countDocuments('accounts');
 
 	bar1.start(last, currentBlock);
 	for (let i = currentBlock + 1; i <= last; i++) {
@@ -92,20 +62,21 @@ var accounts = new Accounts();
 async function updateAccounts(number) {
     let block = await findOne('blocks', {number: number});
 
-    await accounts.upsert(block.miner, number, true);
+    await accounts.upsert(block.miner, number);
     for (let address of block.to) {
-        await accounts.upsert(address, number, true);
+        await accounts.upsert(address, number);
     }
     for (let address of block.from) {
-        await accounts.upsert(address, number, false);
+        await accounts.upsert(address, number);
     }
 
-    accounts.sweep(number);
+    await accounts.sweep(number);
 
-    await insertOne('activeAccounts', {
+    let total = await countDocuments('accounts');
+    let active = await countDocuments('accounts', { active: true });
+    await insertOne('countAccounts', {
         number: number,
-        total: accounts.totalAccountSize,
-        active: accounts.activeAccounts.length,
-        puppet: accounts.getPuppetAccountLength()
+        total: total,
+        active: active
     });
 }

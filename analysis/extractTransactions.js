@@ -12,7 +12,7 @@ const TRANSACTIONS = 'transactions';
 (async function() {
 	// let currentBlock = await findLastOne(BLOCKS, {number: -1});
 
-	let current = 0;
+	let current = 4747990;
 	// if (currentBlock) current = currentBlock.number;
 	
 	// if (current == 0)
