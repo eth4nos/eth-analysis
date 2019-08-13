@@ -1,14 +1,14 @@
 var cluster = require('cluster');
 const {setIndex, findOne, insertOne, update}  = require('./mongoAPIs');
 const ProgressBar = require('./progress');
-const ACCOUNTS = 'accounts_test';
+const ACCOUNTS = 'accounts';
 
 if (cluster.isMaster) {
 	setIndex(ACCOUNTS, { address: 1 });
 
 	let start = 0;
 	let end = 8000000;
-	let workers = require('os').cpus().length - 1;
+	let workers = require('os').cpus().length;
 
 	// Parse arguments
 	if (process.argv.length >= 4) {
@@ -27,7 +27,7 @@ if (cluster.isMaster) {
 	// console.log(limits);
 	var progressBar = new ProgressBar();
 	progressBar.addBars(limits);
-	
+
 	// Process fork
 	for (var i = 0; i < limits.length; i++) {
 		let worker = cluster.fork();
@@ -73,6 +73,6 @@ async function extractBlock(blockNum) {
 				{ activeBlocks: [blockNum] }
 				);
 		}
-		
+
 	}
 }

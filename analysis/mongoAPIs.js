@@ -71,7 +71,7 @@ class Mongodb {
         });
     }
 
-    findMany(collectionName, where={}, option) {
+    findMany(collectionName, where={}) {
         return new Promise(async (resolve, reject) => {
             await connect();
             let collection = db.collection(collectionName);
