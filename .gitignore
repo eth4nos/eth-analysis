@@ -1,2 +1,3 @@
 node_modules/
 mongod.sh
+genesis_*.json

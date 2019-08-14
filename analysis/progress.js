@@ -58,33 +58,46 @@ Multibar.prototype = {
 }
 
 module.exports = class {
-  constructor() {
+  constructor(iteration, epoch) {
     this.mbars = new Multibar();
     this.bars  = [];
+    this.indicator = this.mbars.newBar('Total progress:\t[:bar] :current/:total', {
+      complete: '=',
+      incomplete: ' ',
+      width: 30,
+      total: iteration
+    });
+    this.epoch = epoch;
   }
 
-  addBars(limit) {
-    for (let i = 0; i < limit.length; i++) {
+  addBars(limits) {
+    for (let i = 0; i < limits.length; i++) {
       this.bars.push({
         // bar: this.mbars.newBar(':title [:bar] :percent', {
         bar: this.mbars.newBar(':title\t[:bar] :current/:total', {
-          complete: '='
-        , incomplete: ' '
-        , width: 30
-        , total: limit[i]
+          complete: '=',
+          incomplete: ' ',
+          width: 30,
+          total: limits[i]
         }),
-        limit: limit[i]
+        limit: limits[i]
       });
     }
   }
   
-  forward(i, n = 1) {
-    // console.log(i);
-    // console.log(this.bars[0]);
-    this.bars[i].bar.tick(n, { title: `${i}: ` });
+  forward(progid, nonce, n = 1) {
+    let bar = this.bars[progid].bar;
+    bar.tick(n, { title: `${nonce * this.epoch} ~ ${nonce * this.epoch + bar.total}` });
     // addBar().tick(this.bars[0].curr);
-    if (this.bars[i].bar.curr <= this.bars[i].limit)
+    if (bar.curr <= bar.limit)
       return false;
     return true;
+  }
+
+  update(progid, total) {
+    // console.log(progid, total);
+    let bar = this.bars[progid].bar;
+    bar.total = total;
+    bar.curr = 0;
   }
 }

@@ -1,7 +1,8 @@
 var cluster = require('cluster');
 const {setIndex, findOne, insertOne, update}  = require('./mongoAPIs');
 const ProgressBar = require('./progress');
-const ACCOUNTS = 'accounts';
+const ACCOUNTS = 'accounts_test';
+const epoch = 100;
 
 if (cluster.isMaster) {
 	setIndex(ACCOUNTS, { address: 1 });
@@ -19,38 +20,58 @@ if (cluster.isMaster) {
 
 	// Make progressBar
 	const limits = [];
-	const length = parseInt((end - start) / workers);
-	for (let i = 0; i < workers; i++) {
-		limits.push(length);
+	for (let i = 0; i < parseInt((end - start) / epoch); i++) {
+		limits.push(epoch);
 	}
-	limits.push((end - start) % workers);
-	// console.log(limits);
-	var progressBar = new ProgressBar();
-	progressBar.addBars(limits);
+	let remainder = (end - start) % epoch;
+	if (remainder > 0) {
+		limits.push(remainder);
+	}
+	let progressBar = new ProgressBar(limits.length, epoch);
+	progressBar.addBars(limits.slice(0, workers));
 
 	// Process fork
-	for (var i = 0; i < limits.length; i++) {
+	for (let i = 0; i < workers; i++) {
 		let worker = cluster.fork();
-		worker.send({ number: i, start: start + length * i, last: start + length * i + limits[i] });
+		worker.send({
+			progid: i,
+			nonce: i,
+			start: start + epoch * i,
+			amount: limits[i]
+		});
 
-		worker.on('message', function (message) {
-			// console.log('마스터가 ' + worker.process.pid + ' 워커로부터 받은 메시지 : ' + message);
-			progressBar.forward(message, 1);
+		worker.on('message', function (msg) {
+			progressBar.forward(msg.progid, msg.nonce, 1);
 		});
 	}
+	let nonce = workers;
 
-	cluster.on('exit', function(worker, code, signal) {
-		// console.log(`${code} finished`);
+	// fork next process
+	cluster.on('exit', function(worker, progid, signal) {
+		// console.log(`${progid} finished`);
+		if (nonce <= limits.length) {
+			let worker = cluster.fork();
+			progressBar.update(progid, limits[nonce]);
+			worker.send({
+				progid: progid,
+				nonce: nonce,
+				start: start + epoch * nonce,
+				amount: limits[nonce]
+			});
+			worker.on('message', function (msg) {
+				progressBar.forward(msg.progid, msg.nonce, 1);
+			});
+			nonce++;
+		}
 	});
 } else {
-	// console.log( 'current worker pid is ' + process.pid );
 	process.on('message', async (msg) => {
-		// console.log(msg);
-		for (let i = msg.start + 1; i <= msg.last; i++) {
+		// console.log(msg)
+		for (let i = msg.start + 1; i <= msg.start + msg.amount; i++) {
 			await extractBlock(i);
-			process.send(msg.number);
-		  }
-		  process.exit(msg.number);
+			process.send({progid: msg.progid, nonce: msg.nonce});
+		}
+		process.exit(msg.progid);
 	});
 }
 
