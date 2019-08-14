@@ -65,9 +65,10 @@ module.exports = class {
       complete: '=',
       incomplete: ' ',
       width: 30,
-      total: iteration
+      total: iteration * epoch
     });
     this.epoch = epoch;
+    // this.iteration = iteration;
   }
 
   addBars(limits) {
@@ -85,6 +86,15 @@ module.exports = class {
     }
   }
   
+  forwardIndicator(n = 1) {
+    let bar = this.indicator;
+    bar.tick(n * this.epoch, { title: `Total Progress:` });
+    // addBar().tick(this.bars[0].curr);
+    // if (bar.curr <= this.iteration)
+    //   return false;
+    // return true;
+  }
+
   forward(progid, nonce, n = 1) {
     let bar = this.bars[progid].bar;
     bar.tick(n, { title: `${nonce * this.epoch} ~ ${nonce * this.epoch + bar.total}` });

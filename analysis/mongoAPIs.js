@@ -7,7 +7,7 @@ var client, db;
 
 function connect() {
     return new Promise(async (resolve, reject) => {
-        client = await MongoClient.connect(url, { useNewUrlParser: true }).catch((e) => { console.error(e.message); reject(); });
+        client = await MongoClient.connect(url, { useNewUrlParser: true, useUnifiedTopology: true }).catch((e) => { console.error(e.message); reject(); });
         if (!client) {
             console.error("no client");
             reject();

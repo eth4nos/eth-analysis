@@ -1,8 +1,8 @@
 var cluster = require('cluster');
 const {setIndex, findOne, insertOne, update}  = require('./mongoAPIs');
 const ProgressBar = require('./progress');
-const ACCOUNTS = 'accounts_test';
-const epoch = 100;
+const ACCOUNTS = 'accounts';
+const epoch = 1000;
 
 if (cluster.isMaster) {
 	setIndex(ACCOUNTS, { address: 1 });
@@ -62,6 +62,7 @@ if (cluster.isMaster) {
 				progressBar.forward(msg.progid, msg.nonce, 1);
 			});
 			nonce++;
+			progressBar.forwardIndicator();
 		}
 	});
 } else {
@@ -94,6 +95,5 @@ async function extractBlock(blockNum) {
 				{ activeBlocks: [blockNum] }
 				);
 		}
-
 	}
 }
