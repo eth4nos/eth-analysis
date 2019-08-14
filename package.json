@@ -6,7 +6,6 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "cli-progress": "^2.1.1",
     "cluster": "^0.7.7",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
