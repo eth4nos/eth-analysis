@@ -27,7 +27,7 @@ if (cluster.isMaster) {
 	if (remainder > 0) {
 		limits.push(remainder);
 	}
-	let progressBar = new ProgressBar(limits.length, epoch);
+	let progressBar = new ProgressBar(limits.length, start, epoch);
 	progressBar.addBars(limits.slice(0, workers));
 
 	// Process fork

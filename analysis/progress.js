@@ -58,7 +58,7 @@ Multibar.prototype = {
 }
 
 module.exports = class {
-  constructor(iteration, epoch) {
+  constructor(iteration, start, epoch) {
     this.mbars = new Multibar();
     this.bars  = [];
     this.indicator = this.mbars.newBar('Total progress:\t[:bar] :current/:total', {
@@ -67,6 +67,7 @@ module.exports = class {
       width: 30,
       total: iteration * epoch
     });
+    this.start = start;
     this.epoch = epoch;
     // this.iteration = iteration;
   }
@@ -97,7 +98,7 @@ module.exports = class {
 
   forward(progid, nonce, n = 1) {
     let bar = this.bars[progid].bar;
-    bar.tick(n, { title: `${nonce * this.epoch} ~ ${nonce * this.epoch + bar.total}` });
+    bar.tick(n, { title: `${this.start + nonce * this.epoch} ~ ${this.start + nonce * this.epoch + bar.total}` });
     // addBar().tick(this.bars[0].curr);
     if (bar.curr <= bar.limit)
       return false;
