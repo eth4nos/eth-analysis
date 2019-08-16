@@ -2,7 +2,7 @@ var cluster = require('cluster');
 const {setIndex, findOne, insertOne, update}  = require('./mongoAPIs');
 const ProgressBar = require('./progress');
 const ACCOUNTS = 'accounts';
-const epoch = 1000;
+var epoch = 100;
 
 if (cluster.isMaster) {
 	setIndex(ACCOUNTS, { address: 1 });

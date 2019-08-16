@@ -39,8 +39,10 @@ class Mongodb {
 
     insertMany(collectionName, data) {
         return new Promise(async (resolve, reject) => {
+            await connect();
             let collection = db.collection(collectionName);
             let res = await collection.insertMany(data).catch((e) => { console.error('insertMany', e.message); reject(); });
+            await end();
             resolve();
             // console.log(res);
         });
@@ -106,8 +108,10 @@ class Mongodb {
 
     updateMany(collectionName, where={}, data, option) {
         return new Promise(async (resolve, reject) => {
+            await connect();
             let collection = db.collection(collectionName);
             await collection.updateMany(where, { $set: data }, option).catch((e) => { console.error(e.message); reject(); });
+            await end();
             // console.log(res);
             resolve();
         });
@@ -115,8 +119,10 @@ class Mongodb {
 
     remove(collectionName, where={}) {
         return new Promise(async (resolve, reject) => {
+            await connect();
             let collection = db.collection(collectionName);
             let res = await collection.remove(where).catch((e) => { console.error(e.message); reject(); });
+            await end();
             // console.log(res);
             resolve();
         });
@@ -135,7 +141,9 @@ class Mongodb {
 
     createCollection(collectionName) {
         return new Promise(async (resolve, reject) => {
+            await connect();
             await db.createCollection(collectionName);
+            await end();
         });
     }
 
