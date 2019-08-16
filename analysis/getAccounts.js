@@ -9,7 +9,7 @@ if (cluster.isMaster) {
 
 	let start = 0;
 	let end = 8000000;
-	let workers = require('os').cpus().length;
+	let workers = require('os').cpus().length - 1;
 
 	// Parse arguments
 	if (process.argv.length >= 4) {
