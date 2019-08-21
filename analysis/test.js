@@ -38,8 +38,8 @@ const ProgressBar = require('./progress');
     // await mongo.drop('transactions');
     // await getIndices('accounts');
     // await mongo.setIndex('transactions_legacy', { 'blockNum': 1, 'transactionIndex': 1});
-    await mongo.drop('accounts');
-    //await mongo.drop('transactions_test');
+    await mongo.drop('active_accounts');
+    await mongo.drop('transactions');
 })();
 
 

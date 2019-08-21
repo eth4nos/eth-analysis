@@ -95,11 +95,11 @@ class Mongodb {
         });
     }
 
-    updateOne(collectionName, where={}, data, option) {
+    upsert(collectionName, where={}, data) {
         return new Promise(async (resolve, reject) => {
             await connect();
             let collection = db.collection(collectionName);
-            await collection.updateOne(where, { $set: data }, option).catch((e) => { console.error('updateOne', e.message); reject(); });
+            await collection.updateOne(where, data, { upsert: true }).catch((e) => { console.error('updateOne', e.message); reject(); });
             // console.log(res);
             await end();
             resolve()

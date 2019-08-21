@@ -87,13 +87,13 @@ async function extractBlock(blockNum) {
 		if (account) {
 			await update(ACCOUNTS,
 				{ address: address },
-				{  $addToSet: { activeBlocks: blockNum }}
+				{ $addToSet: { activeBlocks: blockNum }}
 				);
 		} else {
-			await insertOne(ACCOUNTS,
-				{ address: address },
-				{ activeBlocks: [blockNum] }
-				);
+			await insertOne(ACCOUNTS, {
+				address: address,
+				activeBlocks: [blockNum]
+			});
 		}
 	}
 }
