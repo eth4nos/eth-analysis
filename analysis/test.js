@@ -1,4 +1,4 @@
-const mongo  = require('./mongoAPIs');
+const {findMany, findRange}  = require('./mongoAPIs');
 const ProgressBar = require('./progress');
 
 // (async function() {
@@ -33,15 +33,19 @@ const ProgressBar = require('./progress');
 //     await renameCollection('transactions', 'transactions_legacy');
 // })();
 
-(async function() {
+// (async function() {
     // await mongo.drop('accounts');
     // await mongo.drop('transactions');
     // await getIndices('accounts');
     // await mongo.setIndex('transactions_legacy', { 'blockNum': 1, 'transactionIndex': 1});
-    await mongo.drop('active_accounts');
-    await mongo.drop('transactions');
-})();
+    // await mongo.drop('active_accounts');
+    // await mongo.drop('transactions');
+// })();
 
+(async function() {
+    let arr = await findRange('accounts_3m', {_id: 1}, 0, 10);
+    console.log(arr);
+})();
 
 // var limit = [100, 100, 100];
 // var progressBar = new ProgressBar();

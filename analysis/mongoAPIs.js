@@ -55,7 +55,7 @@ class Mongodb {
             let res = await collection.find(where).toArray().catch((e) => { console.error('findOne', e.message); reject(); });
             // console.log(res);
             await end();
-            if (res.length > 0) resolve(res[0]);
+            if (Array.isArray(res) && res.length > 0) resolve(res[0]);
             else resolve(undefined)
         });
     }
@@ -68,7 +68,7 @@ class Mongodb {
             let res = await collection.find().sort(id).limit(10).toArray();
             // console.log(res);
             await end();
-            if (res.length > 0) resolve(res[0]);
+            if (Array.isArray(res) && res.length > 0) resolve(res[0]);
             else resolve(undefined)
         });
     }
@@ -78,6 +78,18 @@ class Mongodb {
             await connect();
             let collection = db.collection(collectionName);
             let res = await collection.find(where).toArray().catch((e) => { console.error(e.message); reject(); });
+            await end();
+            if (res.length > 0) resolve(res);
+            else resolve(undefined)
+        });
+    }
+
+    findRange(collectionName, id, start, amount) {
+        return new Promise(async (resolve, reject) => {
+            await connect();
+            let collection = db.collection(collectionName);
+            let res = await collection.find().sort(id).skip(start).limit(amount).toArray().catch((e) => { console.error('findRange', e.message); reject(); });
+            // console.log(res);
             await end();
             if (res.length > 0) resolve(res);
             else resolve(undefined)
