@@ -1,11 +1,12 @@
 var cluster = require('cluster');
-const {setIndex, findOne, insertOne, update}  = require('./mongoAPIs');
+// const {setIndex, findOne, insertOne, update, upsert, end}  = require('./mongoAPIs');
+var { Blocks, Accounts, ActiveAccounts } = require('./mongoAPIs');
 const ProgressBar = require('./progress');
-const ACCOUNTS = 'accounts';
+const ACCOUNTS = 'accounts_7m';
 var epoch = 100;
 
 if (cluster.isMaster) {
-	setIndex(ACCOUNTS, { address: 1 });
+	// (async () => { await setIndex(ACCOUNTS, { address: 1 }, { unique: true }); })();
 
 	let start = 0;
 	let end = 8000000;
@@ -77,23 +78,39 @@ if (cluster.isMaster) {
 }
 
 async function extractBlock(blockNum) {
-	let block = await findOne('blocks', {number: blockNum});
+
+	let block = await Blocks.findOne({number: blockNum});
 	let addresses = Array.from(new Set(block.to.concat(block.miner, block.from)));
+
+	addresses.forEach(async address => {
+		await Accounts.updateOne({ address: address }, { $addToSet: { activeBlocks: blockNum }}, { upsert: true, strict: false });
+	})
+
+	// let block = await findOne('blocks', {number: blockNum});
+	// let addresses = Array.from(new Set(block.to.concat(block.miner, block.from)));
 
 	// Insert accounts
 	// console.log(addresses);
-	for (address of addresses) {
-		let account = await findOne(ACCOUNTS, { address: address });
-		if (account) {
-			await update(ACCOUNTS,
-				{ address: address },
-				{ $addToSet: { activeBlocks: blockNum }}
-				);
-		} else {
-			await insertOne(ACCOUNTS, {
-				address: address,
-				activeBlocks: [blockNum]
-			});
-		}
-	}
+
+	// addresses.forEach(async address => {
+	// 	await upsert(ACCOUNTS,
+	// 		{ address: address },
+	// 		{ $addToSet: { activeBlocks: blockNum }}
+	// 	);
+	// });
+
+	// for (address of addresses) {
+	// 	let account = await findOne(ACCOUNTS, { address: address });
+	// 	if (account) {
+	// 		await update(ACCOUNTS,
+	// 			{ address: address },
+	// 			{ $addToSet: { activeBlocks: blockNum }}
+	// 			);
+	// 	} else {
+	// 		await insertOne(ACCOUNTS, {
+	// 			address: address,
+	// 			activeBlocks: [blockNum]
+	// 		});
+	// 	}
+	// }
 }
