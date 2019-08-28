@@ -1,7 +1,6 @@
 var cluster = require('cluster');
-const {setIndex, findOne, insertOne, update, findRange}  = require('./mongoAPIs');
+const {Accounts_7m, Accounts_7_6m}  = require('./mongoAPIs');
 const ProgressBar = require('./progress');
-const ACCOUNTS = 'accounts';
 
 /**
  * 1 ~ 3M
@@ -34,7 +33,8 @@ const aggOrder = 0;
 
 if (cluster.isMaster) {
 	let start = 0;
-	let end = aggAccounts[aggOrder].count;
+	// let end = aggAccounts[aggOrder].count;
+	let end = 7814875;
 	let workers = require('os').cpus().length - 1;
 
 	// Make progressBar
@@ -87,27 +87,46 @@ if (cluster.isMaster) {
 } else {
 	process.on('message', async (msg) => {
 		// console.log(msg)
-		let accounts = await findRange(aggAccounts[aggOrder].db_name, {_id: 1}, msg.start, msg.amount);
-		// accounts.forEach(async record => {
+		// findRange(aggAccounts[aggOrder].db_name, {_id: 1}, msg.start, msg.amount);
+		let accounts = await Accounts_7_6m.find().skip(msg.start).limit(msg.amount);
+		
 		for (let i = 0; i < accounts.length; i++) {
+		// accounts.forEach(async record => {
 			let record = accounts[i];
-			let account = await findOne(ACCOUNTS, { address: record.address });
-			if (!Array.isArray(record.activeBlocks)) {
-				console.log(record.activeBlocks);
-			}
-			if (account) {
-				await update(ACCOUNTS,
+			let activeBlocks = record.activeBlocks;
+			let account = await Accounts_7m.findOne({ address: record.address });
+			if (account)
+				activeBlocks = activeBlocks.concat(account.activeBlocks);
+			activeBlocks.sort(((a,b) => { return a-b; }));
+			
+			// let account = await findOne(ACCOUNTS, { address: record.address });
+			// if (!Array.isArray(record.activeBlocks)) {
+			// 	console.log(record.activeBlocks);
+			// }
+			// if (account) {
+				// await update(ACCOUNTS,
+					// { address: record.address },
+					// { $addToSet: { activeBlocks: record.activeBlocks }}
+					// );
+			// } else {
+			// 	await insertOne(ACCOUNTS, {
+			// 		address: record.address,
+			// 		activeBlocks: record.activeBlocks
+			// 	});
+			// console.log(record);
+			if (account)
+				await Accounts_7m.updateOne(
 					{ address: record.address },
-					{ $addToSet: { activeBlocks: record.activeBlocks }}
-					);
-			} else {
-				await insertOne(ACCOUNTS, {
+					{ $set: {activeBlocks: activeBlocks }}
+				);
+			else
+				await Accounts_7m.create({
 					address: record.address,
-					activeBlocks: record.activeBlocks
+					activeBlocks: activeBlocks
+					// { upsert: true, strict: false }
 				});
-			}
-			process.send({progid: msg.progid, nonce: msg.nonce});
-		};
+			process.send({ progid: msg.progid, nonce: msg.nonce });
+		}
 		process.exit(msg.progid);
 	});
 }

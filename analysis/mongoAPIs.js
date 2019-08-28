@@ -44,8 +44,9 @@ const TransactionSchema = new mongoose.Schema({
 TransactionSchema.index({ blockNum: 1, transactionIndex: 1 });
 
 var Blocks = mongoose.model('Blocks', BlockSchema);
-var Accounts = mongoose.model('Accounts_7m', AccountSchema);
+var Accounts_7m = mongoose.model('Accounts_7m', AccountSchema);
+var Accounts_7_6m = mongoose.model('Accounts_7_6m', AccountSchema);
 var ActiveAccounts = mongoose.model('ActiveAccounts', ActiveAccountSchema);
 var Transactions = mongoose.model('Transactions_7m', TransactionSchema);
 
-module.exports = { Blocks, Accounts, ActiveAccounts, Transactions };
+module.exports = { Blocks, Accounts_7m, Accounts_7_6m, ActiveAccounts, Transactions };

@@ -98,7 +98,7 @@ if (cluster.isMaster) {
 		// accounts.forEach(async record => {
 		for (let i = 0; i < accounts.length; i++) {
 			let record = accounts[i];
-			let activeBlocks = record.activeBlocks.sort((a,b) => { return a - b; });
+			let activeBlocks = [...new Set(record.activeBlocks.sort((a,b) => { return a - b; }))];
 			let restoreBlock = [];
 			
 			for (let j = 0; j < activeBlocks.length - 1; j++) {
