@@ -1,12 +1,11 @@
 var cluster = require('cluster');
 const Web3  = require('web3');
 const web3 = new Web3(Web3.givenProvider || 'http://localhost:8545');
-const {setIndex, insertOne}  = require('./mongoAPIs');
+var { Transactions } = require('./mongoAPIs');
 const ProgressBar = require('./progress');
-const TRANSACTIONS = 'transactions_test';
+var epoch = 100;
 
 if (cluster.isMaster) {
-	setIndex(TRANSACTIONS, { blockNum: 1, transactionIndex: 1 });
 
 	let start = 0;
 	let end = 8000000;
@@ -21,37 +20,58 @@ if (cluster.isMaster) {
 
 	// Make progressBar
 	const limits = [];
-	const length = parseInt((end - start) / workers);
-	for (let i = 0; i < workers; i++) {
-		limits.push(length);
+	for (let i = 0; i < parseInt((end - start) / epoch); i++) {
+		limits.push(epoch);
 	}
-	limits.push((end - start) % workers);
-	// console.log(limits);
-	var progressBar = new ProgressBar();
-	progressBar.addBars(limits);
-	
-	// Process fork
-	for (var i = 0; i < limits.length; i++) {
-		let worker = cluster.fork();
-		worker.send({ number: i, start: start + length * i, last: start + length * i + limits[i] });
+	let remainder = (end - start) % epoch;
+	if (remainder > 0) {
+		limits.push(remainder);
+	}
+	let progressBar = new ProgressBar(limits.length, start, epoch);
+	progressBar.addBars(limits.slice(0, workers));
 
-		worker.on('message', function (message) {
-			// console.log('마스터가 ' + worker.process.pid + ' 워커로부터 받은 메시지 : ' + message);
-			progressBar.forward(message, 1);
+	// Process fork
+	for (let i = 0; i < workers; i++) {
+		let worker = cluster.fork();
+		worker.send({
+			progid: i,
+			nonce: i,
+			start: start + epoch * i,
+			amount: limits[i]
+		});
+
+		worker.on('message', function (msg) {
+			progressBar.forward(msg.progid, msg.nonce, 1);
 		});
 	}
+	let nonce = workers;
 
-	cluster.on('exit', function(worker, code, signal) {
-		// console.log(`${code} finished`);
+	// fork next process
+	cluster.on('exit', function(worker, progid, signal) {
+		// console.log(`${progid} finished`);
+		if (nonce <= limits.length) {
+			let worker = cluster.fork();
+			progressBar.update(progid, limits[nonce]);
+			worker.send({
+				progid: progid,
+				nonce: nonce,
+				start: start + epoch * nonce,
+				amount: limits[nonce]
+			});
+			worker.on('message', function (msg) {
+				progressBar.forward(msg.progid, msg.nonce, 1);
+			});
+			nonce++;
+			progressBar.forwardIndicator();
+		}
 	});
 } else {
-	// console.log( 'current worker pid is ' + process.pid );
 	process.on('message', async (msg) => {
-		for (let i = msg.start + 1; i <= msg.last; i++) {
+		for (let i = msg.start + 1; i <= msg.start + msg.amount; i++) {
 			await extractBlock(i);
-			process.send(msg.number);
-		  }
-		  process.exit(msg.number);
+			process.send({progid: msg.progid, nonce: msg.nonce});
+		}
+		process.exit(msg.progid);
 	});
 }
 
@@ -60,7 +80,7 @@ async function extractBlock(blockNum) {
 		let block = await web3.eth.getBlock(blockNum, true).catch((e) => { console.error(e.message); reject(); });
 
 		// Insert transactions
-		for (let transaction of block.transactions) {
+		block.transactions.forEach(async transaction => {
 			// console.log(transaction);
 			let receipt = await web3.eth.getTransactionReceipt(transaction.hash).catch((e) => { console.error(e.message); reject(); });
 			if (!transaction.to) {
@@ -68,7 +88,7 @@ async function extractBlock(blockNum) {
 				transaction.to = receipt.contractAddress;
 			}
 
-			await insertOne(TRANSACTIONS, {
+			await Transactions.create({
 				txhash: transaction.hash,
 				blockNum: blockNum,
 				from: transaction.from,
@@ -80,7 +100,8 @@ async function extractBlock(blockNum) {
 				nonce: transaction.nonce,
 				transactionIndex: transaction.transactionIndex
 			}).catch((e) => { console.error(e.message) });
-		}
+		});
+		
 		resolve();
 	});
 }
