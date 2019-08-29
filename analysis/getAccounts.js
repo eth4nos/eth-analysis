@@ -1,8 +1,8 @@
 var cluster = require('cluster');
 // const {setIndex, findOne, insertOne, update, upsert, end}  = require('./mongoAPIs');
-var { Blocks, Accounts, ActiveAccounts } = require('./mongoAPIs');
+var { Blocks, Accounts } = require('./mongoAPIs');
 const ProgressBar = require('./progress');
-const ACCOUNTS = 'accounts_7m';
+// const ACCOUNTS = 'accounts_7m';
 var epoch = 100;
 
 if (cluster.isMaster) {
@@ -79,11 +79,19 @@ if (cluster.isMaster) {
 
 async function extractBlock(blockNum) {
 
-	let block = await Blocks.findOne({number: blockNum});
+	let block = await Blocks.findOne({number: blockNum}).catch((e) => { console.error(e.message) });;
 	let addresses = Array.from(new Set(block.to.concat(block.miner, block.from)));
 
+	// addresses.forEach(async address => {
+	// 	let account = await Accounts.findOne({ address: address }).catch((e) => { console.error(e.message) });;
+	// 	if (account) {
+	// 		await Accounts.updateOne({ address: address }, { $addToSet: { activeBlocks: blockNum }}).catch((e) => { console.error(e.message) });
+	// 	} else {
+	// 		await Accounts.create({ address: address, activeBlocks: blockNum }).catch((e) => { console.error(e.message) });;
+	// 	}
+	// });
 	addresses.forEach(async address => {
-		await Accounts.updateOne({ address: address }, { $addToSet: { activeBlocks: blockNum }}, { upsert: true, strict: false });
+		await Accounts.updateOne({ address: address }, { $addToSet: { activeBlocks: blockNum }}, { upsert: true, strict: false }).catch((e) => { console.error(e.message) });
 	})
 
 	// let block = await findOne('blocks', {number: blockNum});

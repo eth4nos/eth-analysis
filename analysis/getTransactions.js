@@ -80,10 +80,14 @@ async function extractBlock(blockNum) {
 		let block = await web3.eth.getBlock(blockNum, true).catch((e) => { console.error(e.message); reject(); });
 
 		// Insert transactions
-		block.transactions.forEach(async transaction => {
+		for (let i = 0; i < block.transactions.length; i++) {
+		// block.transactions.forEach(async transaction => {
+			let transaction = block.transactions[i];
+			if (await Transactions.findOne({txhash: transaction.hash})) continue;
 			// console.log(transaction);
+			// let gasUsed = undefined;
 			let receipt = await web3.eth.getTransactionReceipt(transaction.hash).catch((e) => { console.error(e.message); reject(); });
-			if (!transaction.to) {
+			if (receipt && !transaction.to) {
 				// Contract Creation
 				transaction.to = receipt.contractAddress;
 			}
@@ -96,11 +100,11 @@ async function extractBlock(blockNum) {
 				value: transaction.value,
 				gas: transaction.gas,
 				gasPrice: transaction.gasPrice,
-				gasUsed: receipt.gasUsed,
+				gasUsed: 0, // fix zero
 				nonce: transaction.nonce,
 				transactionIndex: transaction.transactionIndex
 			}).catch((e) => { console.error(e.message) });
-		});
+		};
 		
 		resolve();
 	});
