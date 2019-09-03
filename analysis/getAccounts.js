@@ -10,7 +10,7 @@ if (cluster.isMaster) {
 
 	let start = 5000000;
 	let end = 7000000;
-	let workers = 20; // require('os').cpus().length - 1;
+	let workers = 10; // require('os').cpus().length - 1;
 
 	// Parse arguments
 	if (process.argv.length >= 4) {
@@ -83,12 +83,6 @@ async function extractBlock(blockNum) {
 
 	for (let i = 0; i < addresses.length; i++) {
 		let address = addresses[i];
-		let account = await Accounts_5ms.findOne({address: address});
-		if (!account) account = {activeBlocks: []};
-		let activeBlocks = account.activeBlocks;
-		activeBlocks.push(blockNum);
-		if (!account) account = { activeBlocks: [] };
-		activeBlocks = [...new Set(activeBlocks.sort(((a,b) => { return a-b; })))];
-		await Accounts_5ms.updateOne({ address: address }, { $set: { activeBlocks: [...new Set(activeBlocks)] }}, { upsert: true, strict: false }).catch((e) => { console.error(e.message) });
+		await Accounts_5ms.updateOne({ address: address }, { $addToSet: { activeBlocks: blockNum }}, { upsert: true, strict: false }).catch((e) => { console.error(e.message) });
 	}
 }
