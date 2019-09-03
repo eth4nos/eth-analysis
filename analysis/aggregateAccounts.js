@@ -1,9 +1,5 @@
 var cluster = require('cluster');
-<<<<<<< HEAD
 const {Accounts, Accounts_7ms}  = require('./mongoAPIs');
-=======
-const {Accounts_7m, Accounts_7_6m}  = require('./mongoAPIs');
->>>>>>> 3f5b70dbd410423f283036d3f7acd1c4ddac797d
 const ProgressBar = require('./progress');
 
 /**
@@ -36,17 +32,10 @@ var epoch = 10000;
 const aggOrder = 0;
 
 if (cluster.isMaster) {
-<<<<<<< HEAD
 	let start = 11260000;
 	// let end = aggAccounts[aggOrder].count;
 	let end = 11268005;
 	let workers = 1; //require('os').cpus().length - 1;
-=======
-	let start = 0;
-	// let end = aggAccounts[aggOrder].count;
-	let end = 7814875;
-	let workers = require('os').cpus().length - 1;
->>>>>>> 3f5b70dbd410423f283036d3f7acd1c4ddac797d
 
 	// Make progressBar
 	const limits = [];
@@ -99,17 +88,12 @@ if (cluster.isMaster) {
 	process.on('message', async (msg) => {
 		// console.log(msg)
 		// findRange(aggAccounts[aggOrder].db_name, {_id: 1}, msg.start, msg.amount);
-<<<<<<< HEAD
 		let accounts = await Accounts_7ms.find().skip(msg.start).limit(msg.amount);
-=======
-		let accounts = await Accounts_7_6m.find().skip(msg.start).limit(msg.amount);
->>>>>>> 3f5b70dbd410423f283036d3f7acd1c4ddac797d
 		
 		for (let i = 0; i < accounts.length; i++) {
 		// accounts.forEach(async record => {
 			let record = accounts[i];
 			let activeBlocks = record.activeBlocks;
-<<<<<<< HEAD
 			let account = await Accounts.findOne({ address: record.address });
 			if (account)
 				activeBlocks = activeBlocks.concat(account.activeBlocks);
@@ -117,39 +101,11 @@ if (cluster.isMaster) {
 			
 			if (account)
 				await Accounts.updateOne(
-=======
-			let account = await Accounts_7m.findOne({ address: record.address });
-			if (account)
-				activeBlocks = activeBlocks.concat(account.activeBlocks);
-			activeBlocks.sort(((a,b) => { return a-b; }));
-			
-			// let account = await findOne(ACCOUNTS, { address: record.address });
-			// if (!Array.isArray(record.activeBlocks)) {
-			// 	console.log(record.activeBlocks);
-			// }
-			// if (account) {
-				// await update(ACCOUNTS,
-					// { address: record.address },
-					// { $addToSet: { activeBlocks: record.activeBlocks }}
-					// );
-			// } else {
-			// 	await insertOne(ACCOUNTS, {
-			// 		address: record.address,
-			// 		activeBlocks: record.activeBlocks
-			// 	});
-			// console.log(record);
-			if (account)
-				await Accounts_7m.updateOne(
->>>>>>> 3f5b70dbd410423f283036d3f7acd1c4ddac797d
 					{ address: record.address },
 					{ $set: {activeBlocks: activeBlocks }}
 				);
 			else
-<<<<<<< HEAD
 				await Accounts.create({
-=======
-				await Accounts_7m.create({
->>>>>>> 3f5b70dbd410423f283036d3f7acd1c4ddac797d
 					address: record.address,
 					activeBlocks: activeBlocks
 					// { upsert: true, strict: false }

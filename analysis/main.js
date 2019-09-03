@@ -58,7 +58,6 @@ if (cluster.isMaster) {
 	});
 } else {
 	process.on('message', async (msg) => {
-		let 
 		let accounts = await Accounts.find().skip(msg.start).limit(msg.amount);
 
 		for (let i = 0; i < accounts.length; i++) {

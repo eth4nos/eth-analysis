@@ -55,19 +55,10 @@ const BlockAnalysisSchema = new mongoose.Schema({
 BlockAnalysisSchema.index({ number: 1});
 
 var Blocks = mongoose.model('Blocks', BlockSchema);
-<<<<<<< HEAD
 var Accounts = mongoose.model('Accounts', AccountSchema);
 var Accounts_5ms = mongoose.model('Accounts_5ms', AccountSchema);
-=======
-var Accounts_7m = mongoose.model('Accounts_7m', AccountSchema);
-var Accounts_7_6m = mongoose.model('Accounts_7_6m', AccountSchema);
->>>>>>> 3f5b70dbd410423f283036d3f7acd1c4ddac797d
 var ActiveAccounts = mongoose.model('ActiveAccounts', ActiveAccountSchema);
 var Transactions = mongoose.model('Transactions_7m', TransactionSchema);
 var BlockAnalysis = mongoose.model('BlockAnalysis', BlockAnalysisSchema);
 
-<<<<<<< HEAD
 module.exports = { Blocks, Accounts, Accounts_5ms, ActiveAccounts, Transactions, BlockAnalysis };
-=======
-module.exports = { Blocks, Accounts_7m, Accounts_7_6m, ActiveAccounts, Transactions };
->>>>>>> 3f5b70dbd410423f283036d3f7acd1c4ddac797d
