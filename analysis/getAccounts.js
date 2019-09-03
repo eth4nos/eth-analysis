@@ -1,6 +1,6 @@
 var cluster = require('cluster');
 // const {setIndex, findOne, insertOne, update, upsert, end}  = require('./mongoAPIs');
-var { Blocks, Accounts } = require('./mongoAPIs');
+var { Blocks, Accounts_5ms } = require('./mongoAPIs');
 const ProgressBar = require('./progress');
 // const ACCOUNTS = 'accounts_7m';
 var epoch = 100;
@@ -8,9 +8,9 @@ var epoch = 100;
 if (cluster.isMaster) {
 	// (async () => { await setIndex(ACCOUNTS, { address: 1 }, { unique: true }); })();
 
-	let start = 0;
-	let end = 8000000;
-	let workers = require('os').cpus().length - 1;
+	let start = 5000000;
+	let end = 7000000;
+	let workers = 20; // require('os').cpus().length - 1;
 
 	// Parse arguments
 	if (process.argv.length >= 4) {
@@ -78,47 +78,17 @@ if (cluster.isMaster) {
 }
 
 async function extractBlock(blockNum) {
-
-	let block = await Blocks.findOne({number: blockNum}).catch((e) => { console.error(e.message) });;
+	let block = await Blocks.findOne({number: blockNum}).catch((e) => { console.error(e.message) });
 	let addresses = Array.from(new Set(block.to.concat(block.miner, block.from)));
 
-	// addresses.forEach(async address => {
-	// 	let account = await Accounts.findOne({ address: address }).catch((e) => { console.error(e.message) });;
-	// 	if (account) {
-	// 		await Accounts.updateOne({ address: address }, { $addToSet: { activeBlocks: blockNum }}).catch((e) => { console.error(e.message) });
-	// 	} else {
-	// 		await Accounts.create({ address: address, activeBlocks: blockNum }).catch((e) => { console.error(e.message) });;
-	// 	}
-	// });
-	addresses.forEach(async address => {
-		await Accounts.updateOne({ address: address }, { $addToSet: { activeBlocks: blockNum }}, { upsert: true, strict: false }).catch((e) => { console.error(e.message) });
-	})
-
-	// let block = await findOne('blocks', {number: blockNum});
-	// let addresses = Array.from(new Set(block.to.concat(block.miner, block.from)));
-
-	// Insert accounts
-	// console.log(addresses);
-
-	// addresses.forEach(async address => {
-	// 	await upsert(ACCOUNTS,
-	// 		{ address: address },
-	// 		{ $addToSet: { activeBlocks: blockNum }}
-	// 	);
-	// });
-
-	// for (address of addresses) {
-	// 	let account = await findOne(ACCOUNTS, { address: address });
-	// 	if (account) {
-	// 		await update(ACCOUNTS,
-	// 			{ address: address },
-	// 			{ $addToSet: { activeBlocks: blockNum }}
-	// 			);
-	// 	} else {
-	// 		await insertOne(ACCOUNTS, {
-	// 			address: address,
-	// 			activeBlocks: [blockNum]
-	// 		});
-	// 	}
-	// }
+	for (let i = 0; i < addresses.length; i++) {
+		let address = addresses[i];
+		let account = await Accounts_5ms.findOne({address: address});
+		if (!account) account = {activeBlocks: []};
+		let activeBlocks = account.activeBlocks;
+		activeBlocks.push(blockNum);
+		if (!account) account = { activeBlocks: [] };
+		activeBlocks = [...new Set(activeBlocks.sort(((a,b) => { return a-b; })))];
+		await Accounts_5ms.updateOne({ address: address }, { $set: { activeBlocks: [...new Set(activeBlocks)] }}, { upsert: true, strict: false }).catch((e) => { console.error(e.message) });
+	}
 }

@@ -107,8 +107,10 @@ module.exports = class {
 
   update(progid, total) {
     // console.log(progid, total);
-    let bar = this.bars[progid].bar;
-    bar.total = total;
-    bar.curr = 0;
+    if (this.bars[progid]) {
+      let bar = this.bars[progid].bar;
+      bar.total = total;
+      bar.curr = 0;
+    }
   }
 }

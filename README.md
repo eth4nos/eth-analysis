@@ -38,3 +38,6 @@ $ node countActiveAccounts.js
 $ ./run.sh
 ```
 Then you can see the result at <http://localhost:3000/>
+
+* Troubleshooting
+If mongodb process dies, add `?maxPoolSize=50` to db url
