@@ -1,40 +1,13 @@
 var cluster = require('cluster');
-const {setIndex, findOne, insertOne, update, findRange}  = require('./mongoAPIs');
+const { Accounts_7ms, ActiveAccounts_7m_1w }  = require('./mongoAPIs');
 const ProgressBar = require('./progress');
-
-/**
- * 1 ~ 3M
- * ObjectId: 5d53d285019cd1d76756e705
- * count: 840230
- */
-aggAccounts = [
-	{
-		// 3M ~ 5M
-		db_name: 'accounts_3m',
-		objectId: '5d5a296e156c0e1acc0d9ec1',
-		count: 22197266
-	},
-	{
-		// 5M ~ 7M
-		db_name: 'accounts_5m',
-		objectId: '5d53d28e0da4fa0c01c4ec38',
-		count: 27180157
-	},
-	{
-		// 7M ~ 8M
-		db_name: 'accounts_7m',
-		objectId: '5d5a495f0d0057455ff99507',
-		// count: 14264133
-		count: 10000
-	}
-]
 
 const ACCOUNTS			= 'accounts_7m';
 const ACTIVE_ACCOUNTS	= 'active_accounts_7m';
 const TRANSACTIONS		= 'transactions_7m';
 const INTERVAL			= 100
-const EPOCH				= 172800; // 1 month
-// const EPOCH 			= 40320 // 1 week
+// const EPOCH				= 172800; // 1 month
+const EPOCH 			= 40320 // 1 week
 // const EPOCH 			= 1024;
 const order = 2;
 
@@ -94,24 +67,21 @@ if (cluster.isMaster) {
 } else {
 	process.on('message', async (msg) => {
 		// console.log(msg)
-		let accounts = await findRange(ACCOUNTS, {_id: 1}, msg.start, msg.amount);
-		// accounts.forEach(async record => {
+		let accounts = await Accounts_7ms.find().skip(msg.start).limit(msg.amount).catch((e) => { console.error('Accounts', e.message); });
 		for (let i = 0; i < accounts.length; i++) {
 			let record = accounts[i];
-			let activeBlocks = [...new Set(record.activeBlocks.sort((a,b) => { return a - b; }))];
+			let activeBlocks = [...new Set(record.activeBlocks)].sort((a,b) => { return a - b; });
 			let restoreBlock = [];
 			
 			for (let j = 0; j < activeBlocks.length - 1; j++) {
-				if (Math.floor(activeBlocks[j + 1] / EPOCH) - Math.floor(activeBlocks[j] / EPOCH) > 1)
+				if (activeBlocks[j] > 7300000) break;
+				if (Math.floor(activeBlocks[j + 1] / EPOCH) - Math.floor(activeBlocks[j] / EPOCH) > 1) {
+					console.log(`restore: ${record,address} at ${activeBlocks[j + 1] - 1}`);
 					restoreBlock.push(activeBlocks[j + 1] - 1);
+				}
 			}
-
-			// await update(ACCOUNTS,
-			// 	{ address: record.address },
-			// 	{ $set: { activeBlocks: activeBlocks }}
-			// );
-
-			await insertOne(ACTIVE_ACCOUNTS, {
+			
+			ActiveAccounts_7m_1w.create({
 				address: record.address,
 				restoreBlock: restoreBlock
 			});

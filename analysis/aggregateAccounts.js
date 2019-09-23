@@ -1,41 +1,13 @@
 var cluster = require('cluster');
-const {Accounts, Accounts_7ms}  = require('./mongoAPIs');
+const { Accounts, Accounts_0, Accounts_3ms, Accounts_5ms, Accounts_7ms }  = require('./mongoAPIs');
 const ProgressBar = require('./progress');
 
-/**
- * 1 ~ 3M
- * ObjectId: 5d53d285019cd1d76756e705
- * count: 840230
- */
-aggAccounts = [
-	{
-		// 3M ~ 5M
-		db_name: 'accounts_3m',
-		objectId: '5d5a296e156c0e1acc0d9ec1',
-		count: 22197266
-	},
-	{
-		// 5M ~ 7M
-		db_name: 'accounts_5m',
-		objectId: '5d53d28e0da4fa0c01c4ec38',
-		count: 27180157
-	},
-	{
-		// 7M ~ 8M
-		db_name: 'accounts_7m',
-		objectId: '5d5a495f0d0057455ff99507',
-		count: 14264133
-	}
-]
-
-var epoch = 10000;
-const aggOrder = 0;
+var epoch = 1000;
 
 if (cluster.isMaster) {
-	let start = 11260000;
-	// let end = aggAccounts[aggOrder].count;
-	let end = 11268005;
-	let workers = 1; //require('os').cpus().length - 1;
+	let start = 0;
+	let end = 14264037; // 0~3M: 807699, 3M~5M: 22224177, 5M~7M: 27151711, 7M~8M: 14264037
+	let workers = 28; //require('os').cpus().length - 1;
 
 	// Make progressBar
 	const limits = [];
@@ -102,7 +74,7 @@ if (cluster.isMaster) {
 			if (account)
 				await Accounts.updateOne(
 					{ address: record.address },
-					{ $set: {activeBlocks: activeBlocks }}
+					{ $set: { activeBlocks: activeBlocks }}
 				);
 			else
 				await Accounts.create({

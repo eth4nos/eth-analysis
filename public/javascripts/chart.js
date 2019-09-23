@@ -2,11 +2,16 @@ var svg = d3.select("svg"),
   margin = {top: 20, right: 100, bottom: 30, left: 100},
   width = +svg.attr("width") - margin.left - margin.right,
   height = +svg.attr("height") - margin.top - margin.bottom,
+  // width = 800,
+  // height = 600,
   g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var color = d3.scaleOrdinal()
-  .domain(["total", "active", "puppet"])
+  // .domain(["total", "active"])
+  // .range(["rgba(236, 226, 218, 0.5)", "rgba(156, 179, 182, 0.5)"]);
+  .domain(["total", "active_1w", "active_1m"])
   .range(["rgba(236, 226, 218, 0.5)", "rgba(156, 179, 182, 0.5)", "rgba(85, 114, 121, 0.5)"]);
+  // .range(["rgba(234, 173, 77, 1)", "rgba(221, 120, 121, 1)", "rgba(180, 109, 165, 1)"]);
 
 var x = d3.scaleLinear().range([0, width]),
   y = d3.scaleLinear().range([height, 0]),
@@ -24,7 +29,9 @@ var valueline2 = d3.line()
     .x(d => { return x(d.number); })
     .y(d => { return y2(d.value); });
 
-d3.json("/data", (error, sources) => {
+var formatValue = d3.format(".2s");
+
+d3.json(period, (error, sources) => {
     if (error) throw error;
 
     console.log(sources);
@@ -43,18 +50,21 @@ d3.json("/data", (error, sources) => {
     g.append("g")
       .attr("class", "axis axis--x")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(x)
+        .tickFormat(d => { return formatValue(d); })
+      );
 
     g.append("g")
       .attr("class", "axis axis--y")
-      .call(d3.axisLeft(y))
+      .call(d3.axisLeft(y).tickFormat(d => { return formatValue(d); }))
       .append("text")
       .attr("transform", "rotate(-90)")
       .attr("x", -10)
       .attr("y", 10)
       .attr("dy", "0.71em")
       .attr("fill", "#000")
-      .text("total, active, puppet");
+      // .text("total, active");
+      // .text("total, active_1w, active_1m");
 
     var source = g.selectAll(".area")
         .data(sources.slice(0, 3))
@@ -67,18 +77,36 @@ d3.json("/data", (error, sources) => {
 
     // Add the valueline2 path.
     g.selectAll(".line")
-      .data(sources.slice(3))
+      .data(sources.slice(3, 4))
       .enter()
       .append("path")
         .attr("fill", "none")
-        .attr("stroke", "rgba(233, 153, 144, 1)")
+        // .attr("stroke", "rgba(233, 153, 144, 1)")
+        .attr("stroke", "rgba(156, 179, 182, 0.5)")
         .attr("stroke-width", 1.5)
         .attr("d", function(d){
           return d3.line()
             .x(function(d) { return x(d.number); })
             .y(function(d) { return y2(+d.value); })
+            .curve(d3.curveMonotoneX) // apply smoothing to the line
             (d.values)
         })
+
+    g.selectAll(".line")
+    .data(sources.slice(4))
+    .enter()
+    .append("path")
+      .attr("fill", "none")
+      // .attr("stroke", "rgba(233, 153, 144, 1)")
+      .attr("stroke", "rgba(85, 114, 121, 0.5)")
+      .attr("stroke-width", 1.5)
+      .attr("d", function(d){
+        return d3.line()
+          .x(function(d) { return x(d.number); })
+          .y(function(d) { return y2(+d.value); })
+          .curve(d3.curveMonotoneX) // apply smoothing to the line
+          (d.values)
+      })
 
     // Add the y2 axis
     g.append("g")
@@ -92,6 +120,14 @@ d3.json("/data", (error, sources) => {
       .attr("dy", "0.71em")
       .attr("fill", "#000")
       .text("active / total");
+
+    // Add legends
+    g.append("circle").attr("cx",30).attr("cy",20).attr("r", 6).style("fill", "rgba(236, 226, 218, 0.5)")
+    g.append("circle").attr("cx",30).attr("cy",40).attr("r", 6).style("fill", "rgba(156, 179, 182, 0.5)")
+    g.append("circle").attr("cx",30).attr("cy",60).attr("r", 6).style("fill", "rgba(85, 114, 121, 0.5)")
+    g.append("text").attr("x", 50).attr("y", 20).text("total").style("font-size", "12px").attr("alignment-baseline","middle")
+    g.append("text").attr("x", 50).attr("y", 40).text("active 1m").style("font-size", "12px").attr("alignment-baseline","middle")
+    g.append("text").attr("x", 50).attr("y", 60).text("active 1w").style("font-size", "12px").attr("alignment-baseline","middle")
 });
 
 // var parseDate = d3.timeParse("%Y/%m/%d %H:%M");

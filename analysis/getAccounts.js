@@ -1,16 +1,16 @@
 var cluster = require('cluster');
 // const {setIndex, findOne, insertOne, update, upsert, end}  = require('./mongoAPIs');
-var { Blocks, Accounts_5ms } = require('./mongoAPIs');
+var { Blocks, Accounts_0 } = require('./mongoAPIs');
 const ProgressBar = require('./progress');
 // const ACCOUNTS = 'accounts_7m';
-var epoch = 100;
+var epoch = 1000;
 
 if (cluster.isMaster) {
 	// (async () => { await setIndex(ACCOUNTS, { address: 1 }, { unique: true }); })();
 
-	let start = 5000000;
-	let end = 7000000;
-	let workers = 10; // require('os').cpus().length - 1;
+	let start = 3000000;
+	let end = 5000000;
+	let workers = 25; // require('os').cpus().length - 1;
 
 	// Parse arguments
 	if (process.argv.length >= 4) {
@@ -69,7 +69,7 @@ if (cluster.isMaster) {
 } else {
 	process.on('message', async (msg) => {
 		// console.log(msg)
-		for (let i = msg.start + 1; i <= msg.start + msg.amount; i++) {
+		for (let i = msg.start; i <= msg.start + msg.amount; i++) {
 			await extractBlock(i);
 			process.send({progid: msg.progid, nonce: msg.nonce});
 		}
@@ -79,10 +79,25 @@ if (cluster.isMaster) {
 
 async function extractBlock(blockNum) {
 	let block = await Blocks.findOne({number: blockNum}).catch((e) => { console.error(e.message) });
+	
 	let addresses = Array.from(new Set(block.to.concat(block.miner, block.from)));
-
 	for (let i = 0; i < addresses.length; i++) {
 		let address = addresses[i];
-		await Accounts_5ms.updateOne({ address: address }, { $addToSet: { activeBlocks: blockNum }}, { upsert: true, strict: false }).catch((e) => { console.error(e.message) });
+		console.log(blockNum);
+		let account = await Accounts_0.findOne({ address: address });
+		if (account) {
+			let activeBlocks = account.activeBlocks.push(blockNum);
+			await Accounts_0.updateOne(
+				{ address: address },
+				{ $set: { activeBlocks: activeBlocks }}
+			);
+		} else
+			await Accounts_0.create({
+				address: address,
+				activeBlocks: [blockNum]
+				// { upsert: true, strict: false }
+			});
+
+		// await Accounts_0.updateOne({ address: address }, { $addToSet: { activeBlocks: blockNum }}, { upsert: true, strict: false }).catch((e) => { console.error(e.message) });
 	}
 }
