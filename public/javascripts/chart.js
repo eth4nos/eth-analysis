@@ -1,9 +1,9 @@
 var svg = d3.select("svg"),
   margin = {top: 20, right: 100, bottom: 30, left: 100},
-  width = +svg.attr("width") - margin.left - margin.right,
-  height = +svg.attr("height") - margin.top - margin.bottom,
-  // width = 800,
-  // height = 600,
+  // width = +svg.attr("width") - margin.left - margin.right,
+  // height = +svg.attr("height") - margin.top - margin.bottom,
+  width = 800,
+  height = 600,
   g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var color = d3.scaleOrdinal()
@@ -27,7 +27,7 @@ var area = d3.area()
 // Right Y-axis
 var valueline2 = d3.line()
     .x(d => { return x(d.number); })
-    .y(d => { return y2(d.value); });
+    .y(d => { return y2(d.value); })
 
 var formatValue = d3.format(".2s");
 
@@ -52,17 +52,20 @@ d3.json(period, (error, sources) => {
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x)
         .tickFormat(d => { return formatValue(d); })
-      );
+      ).style("font-size","18px");
 
     g.append("g")
       .attr("class", "axis axis--y")
       .call(d3.axisLeft(y).tickFormat(d => { return formatValue(d); }))
+      .style("font-size","18px")
       .append("text")
       .attr("transform", "rotate(-90)")
-      .attr("x", -10)
-      .attr("y", 10)
+      .attr("x",0)
+      .attr("y", -70)
       .attr("dy", "0.71em")
       .attr("fill", "#000")
+      .text("# of accounts")
+      .style("font-size","18px");
       // .text("total, active");
       // .text("total, active_1w, active_1m");
 
@@ -83,7 +86,7 @@ d3.json(period, (error, sources) => {
         .attr("fill", "none")
         // .attr("stroke", "rgba(233, 153, 144, 1)")
         .attr("stroke", "rgba(156, 179, 182, 0.5)")
-        .attr("stroke-width", 1.5)
+        .attr("stroke-width", 2)
         .attr("d", function(d){
           return d3.line()
             .x(function(d) { return x(d.number); })
@@ -99,38 +102,40 @@ d3.json(period, (error, sources) => {
       .attr("fill", "none")
       // .attr("stroke", "rgba(233, 153, 144, 1)")
       .attr("stroke", "rgba(85, 114, 121, 0.5)")
-      .attr("stroke-width", 1.5)
+      .attr("stroke-width", 2)
       .attr("d", function(d){
         return d3.line()
           .x(function(d) { return x(d.number); })
           .y(function(d) { return y2(+d.value); })
           .curve(d3.curveMonotoneX) // apply smoothing to the line
           (d.values)
-      })
+      });
 
     // Add the y2 axis
     g.append("g")
       .attr("class", "axis axis--y2")
       .attr("transform", "translate( " + width + ", 0 )")
       .call(d3.axisRight(y2))
+      .style("font-size","18px")
       .append("text")
       .attr("transform", "rotate(-90)")
-      .attr("x", -55)
-      .attr("y", 36)
+      .attr("x", -90)
+      .attr("y", 50)
       .attr("dy", "0.71em")
       .attr("fill", "#000")
-      .text("active / total");
+      .text("active / total")
+      .style("font-size","18px");
 
     // Add legends
-    g.append("circle").attr("cx",30).attr("cy",20).attr("r", 6).style("fill", "rgba(236, 226, 218, 0.5)")
-    g.append("circle").attr("cx",30).attr("cy",40).attr("r", 6).style("fill", "rgba(156, 179, 182, 0.5)")
-    g.append("circle").attr("cx",30).attr("cy",60).attr("r", 6).style("fill", "rgba(85, 114, 121, 0.5)")
-    g.append("text").attr("x", 50).attr("y", 20).text("total").style("font-size", "12px").attr("alignment-baseline","middle")
-    g.append("text").attr("x", 50).attr("y", 40).text("active 1m").style("font-size", "12px").attr("alignment-baseline","middle")
-    g.append("text").attr("x", 50).attr("y", 60).text("active 1w").style("font-size", "12px").attr("alignment-baseline","middle")
+    g.append("circle").attr("cx",60).attr("cy",20).attr("r", 8).style("fill", "rgba(236, 226, 218, 0.5)")
+    g.append("circle").attr("cx",60).attr("cy",60).attr("r", 8).style("fill", "rgba(156, 179, 182, 0.5)")
+    g.append("circle").attr("cx",60).attr("cy",100).attr("r", 8).style("fill", "rgba(85, 114, 121, 0.5)")
+    g.append("text").attr("x", 80).attr("y", 20).text("total").style("font-size", "18px").attr("alignment-baseline","middle")
+    g.append("text").attr("x", 80).attr("y", 60).text("active 1m").style("font-size", "18px").attr("alignment-baseline","middle")
+    g.append("text").attr("x", 80).attr("y", 100).text("active 1w").style("font-size", "18px").attr("alignment-baseline","middle")
 });
 
-// var parseDate = d3.timeParse("%Y/%m/%d %H:%M");
+// var parseDate = d3.timeParse("%Y/%m/%d %H:%M");스크린샷 2019-10-23 오후 9.12.22
 
 // d3.csv("kW_zoomed.csv", type, function(error, data) {
 //     if (error) throw error;

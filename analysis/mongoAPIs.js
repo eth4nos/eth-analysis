@@ -45,6 +45,12 @@ const TransactionSchema = new mongoose.Schema({
 });
 TransactionSchema.index({ blockNum: 1, transactionIndex: 1 });
 
+const TransactionCountSchema = new mongoose.Schema({
+    blockNum: Number,
+    count: Number
+});
+TransactionCountSchema.index({ blockNum: 1});
+
 const BlockAnalysisSchema = new mongoose.Schema({
     number: { type: Number, unique: true },
     // newAccounts: Number,
@@ -80,10 +86,25 @@ var Accounts_7ms = mongoose.model('Accounts_7ms', AccountSchema);
 var ActiveAccounts = mongoose.model('ActiveAccounts', ActiveAccountSchema);
 var ActiveAccounts_7m_1w = mongoose.model('ActiveAccounts_7m_1w', ActiveAccountSchema);
 var Transactions = mongoose.model('Transactions_7m', TransactionSchema);
+var TransactionCounts = mongoose.model('TransactionCounts', TransactionCountSchema);
 var BlockAnalysis = mongoose.model('BlockAnalysis', BlockAnalysisSchema);
 var BlockAnalysis_7m = mongoose.model('BlockAnalysis_7m', BlockAnalysisSchema);
 // var BlockAnalysis_1w = mongoose.model('BlockAnalysis_1w', BlockAnalysisSchema);
 // var BlockAnalysis_1m = mongoose.model('BlockAnalysis_1m', BlockAnalysisSchema);
 var AccountAnalysis = mongoose.model('AccountAnalysis', AccountAnalysisSchema);
 
-module.exports = { Blocks, Accounts, Accounts_0, Accounts_3ms, Accounts_5ms, Accounts_7ms, ActiveAccounts, ActiveAccounts_7m_1w, Transactions, BlockAnalysis, BlockAnalysis_7m, AccountAnalysis };
+module.exports = {
+    Blocks,
+    Accounts,
+    Accounts_0,
+    Accounts_3ms,
+    Accounts_5ms,
+    Accounts_7ms,
+    ActiveAccounts,
+    ActiveAccounts_7m_1w,
+    Transactions,
+    TransactionCounts,
+    BlockAnalysis,
+    BlockAnalysis_7m,
+    AccountAnalysis
+};
