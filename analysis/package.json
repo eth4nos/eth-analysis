@@ -1,0 +1,17 @@
+{
+  "name": "analysis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "getInitialData.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cluster": "^0.7.7",
+    "mongoose": "^5.7.14",
+    "progress": "^2.0.3",
+    "web3": "^1.2.4"
+  }
+}
