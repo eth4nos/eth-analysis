@@ -98,7 +98,7 @@ module.exports = class {
 
   forward(progid, nonce, n = 1) {
     let bar = this.bars[progid].bar;
-    bar.tick(n, { title: `${this.start + nonce * this.epoch} ~ ${this.start + nonce * this.epoch + bar.total}` });
+    bar.tick(n, { title: `${this.start + nonce * this.epoch} ~ ${this.start + nonce * this.epoch + bar.total - 1}` });
     // addBar().tick(this.bars[0].curr);
     if (bar.curr <= bar.limit)
       return false;

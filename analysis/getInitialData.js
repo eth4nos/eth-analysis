@@ -2,20 +2,26 @@
  * Transactions, Active accounts, Initial state
  */
 var cluster = require('cluster');
-var { Accounts, Transactions } = require('./mongoAPIs');
+// var { Accounts_, Transactions_ } = require('./mongoAPIs');
+// var Accounts = Accounts_;
+// var Transactions = Transactions_;
 const Web3  = require('web3');
+var fs = require('fs');
 
 const ProgressBar = require('./progress');
 // use the given Provider, e.g in Mist, or instantiate a new websocket provider
 const web3 = new Web3(Web3.givenProvider || 'http://localhost:8545');
 
-const INITIAL_BLOCK = 7000000;
+const INITIAL_BLOCK = 7000001;
 const BATCH = 100;
 
 if (cluster.isMaster) {
-	let start = INITIAL_BLOCK;
-	let end = 8000000;
-	let workers = 60; // require('os').cpus().length - 1;
+	let start = INITIAL_BLOCK; // Not included
+	// let end = 8000000;
+	let end = 7300000;
+	let workers = 50; // require('os').cpus().length - 1;
+
+	let transaction_count = new Array(end - start + 1);
 
 	// Parse arguments
 	if (process.argv.length >= 4) {
@@ -26,10 +32,10 @@ if (cluster.isMaster) {
 
 	// Make progressBar
 	const limits = [];
-	for (let i = 0; i < parseInt((end - start) / BATCH); i++) {
+	for (let i = 0; i < parseInt((end - start + 1) / BATCH); i++) {
 		limits.push(BATCH);
 	}
-	let remainder = (end - start) % BATCH;
+	let remainder = (end - start + 1) % BATCH;
 	if (remainder > 0) {
 		limits.push(remainder);
 	}
@@ -47,6 +53,11 @@ if (cluster.isMaster) {
 		});
 
 		worker.on('message', function (msg) {
+			for (key in msg.tx_count) {
+				transaction_count[key] = msg.tx_count[key];
+			}
+			save_tx_data(transaction_count);
+			// console.log(transaction_count);
 			progressBar.forward(msg.progid, msg.nonce, 1);
 		});
 	}
@@ -65,6 +76,11 @@ if (cluster.isMaster) {
 				amount: limits[nonce]
 			});
 			worker.on('message', function (msg) {
+				for (key in msg.tx_count) {
+					transaction_count[key] = msg.tx_count[key];
+				}
+				save_tx_data(transaction_count);
+				// console.log(transaction_count);
 				progressBar.forward(msg.progid, msg.nonce, 1);
 			});
 			nonce++;
@@ -75,8 +91,8 @@ if (cluster.isMaster) {
 	process.on('message', async (msg) => {
 		// console.log(msg)
 		for (let i = msg.start; i < msg.start + msg.amount; i++) {
-			await getState(i);
-			process.send({progid: msg.progid, nonce: msg.nonce});
+			let tx_count = await getState(i);
+			process.send({progid: msg.progid, nonce: msg.nonce, tx_count: tx_count});
 		}
 		process.exit(msg.progid);
 	});
@@ -86,17 +102,35 @@ async function getState(blockNum) {
 	return new Promise(async (resolve, reject) => {
 		let block = await web3.eth.getBlock(blockNum, true).catch((e) => { console.error(e.message); reject(); });
 		
+		// count transactions
+		let tx_count = new Object();
+		tx_count[blockNum - INITIAL_BLOCK] = block.transactions.length;
+
 		// Insert transactions
+		let miningReward = 3000000000000000000;
+		let values = {};
 		for (let i = 0; i < block.transactions.length; i++) {
 			let transaction = block.transactions[i];
-			if (await Transactions.findOne({hash: transaction.hash})) continue; // ???
+			if (await Transactions.findOne({hash: transaction.hash})) continue; // ??
 			let receipt = await web3.eth.getTransactionReceipt(transaction.hash).catch((e) => { console.error(e.message); reject(); });
 			if (receipt && !transaction.to) {
 				// Contract Creation
 				transaction.to = receipt.contractAddress;
 			}
-			await updateAccount(transaction.from, blockNum);
-			await updateAccount(transaction.to, blockNum);
+			miningReward += transaction.gasPrice * receipt.gasUsed * 1;
+
+			let value = transaction.value * 1;
+			if (values[transaction.from]) values[transaction.from] -= value;
+			else {
+				values[transaction.from] = -value;
+			}
+			if (values[transaction.to]) values[transaction.to] += value;
+			else {
+				values[transaction.to] = value;
+			}
+
+			// await updateAccount(transaction.from, blockNum, -value);
+			// await updateAccount(transaction.to, blockNum, value);
 			await Transactions.create({
 				hash: transaction.hash,
 				blockNum: blockNum,
@@ -107,29 +141,44 @@ async function getState(blockNum) {
 				nonce: transaction.nonce
 			}).catch((e) => { console.error(e.message) });
 		}
-		await updateAccount(block.miner, blockNum);
-		resolve();
+
+		for (account in values) {
+			// console.log(account);
+			// console.log(values[account])
+			await updateAccount(account, blockNum, values[account]);
+		}
+		await updateAccount(block.miner, blockNum, miningReward);
+		resolve(tx_count);
 	});
 }
 
-function updateAccount(address, blockNum) {
+function updateAccount(address, blockNum, value) {
 	return new Promise(async (resolve, reject) => {
 		let account = await Accounts.findOne({ address: address });
 		if (account) {
 			await Accounts.updateOne(
 				{ address: address },
-				{ $addToSet: { activeBlocks: blockNum }}
+				{ $addToSet: { activeBlocks: blockNum },
+				  $push: {transferringValues: { blockNum: blockNum, value: value }}}
 			);
 			resolve();
 		} else {
 			let initialBalance = await web3.eth.getBalance(address, INITIAL_BLOCK).catch((e) => { console.error(e.message); reject(); });
 			await Accounts.updateOne(
 				{ address: address },
-				{ activeBlocks: [blockNum],
-				  initialBalance: initialBalance
+				{ initialBalance: initialBalance,
+				  activeBlocks: [blockNum],
+				  $push: {transferringValues: { blockNum: blockNum, value: value }}
 				}, { upsert: true, strict: true}
 			);
 			resolve();
 		}
+	});
+}
+
+function save_tx_data(tx_count) {
+	fs.writeFileSync('./tx_count_1w.txt', JSON.stringify(tx_count), function(err) {
+		if(err) throw err;
+		// console.log('File write completed');
 	});
 }
