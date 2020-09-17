@@ -26,12 +26,12 @@ TransactionSchema.index({ blockNum: 1, transactionIndex: 1 });
 
 var Accounts = mongoose.model('Accounts', AccountSchema);
 var Transactions = mongoose.model('Transactions', TransactionSchema);
-var Accounts_ = mongoose.model('Accounts_', AccountSchema);
-var Transactions_ = mongoose.model('Transactions_', TransactionSchema);
+// var Accounts_ = mongoose.model('Accounts_', AccountSchema);
+// var Transactions_ = mongoose.model('Transactions_', TransactionSchema);
 
 module.exports = {
     Accounts,
     Transactions,
-    Accounts_,
-    Transactions_
+    //Accounts_,
+    //Transactions_
 };

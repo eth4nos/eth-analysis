@@ -5,6 +5,7 @@ var cluster = require('cluster');
 // var { Accounts_, Transactions_ } = require('./mongoAPIs');
 // var Accounts = Accounts_;
 // var Transactions = Transactions_;
+var { Accounts, Transactions } = require('./mongoAPIs');
 const Web3  = require('web3');
 var fs = require('fs');
 
@@ -101,7 +102,7 @@ if (cluster.isMaster) {
 async function getState(blockNum) {
 	return new Promise(async (resolve, reject) => {
 		let block = await web3.eth.getBlock(blockNum, true).catch((e) => { console.error(e.message); reject(); });
-		
+
 		// count transactions
 		let tx_count = new Object();
 		tx_count[blockNum - INITIAL_BLOCK] = block.transactions.length;
@@ -109,20 +110,22 @@ async function getState(blockNum) {
 		// Insert transactions
 		let miningReward = 3000000000000000000;
 		let values = {};
+		// console.log(block)
 		for (let i = 0; i < block.transactions.length; i++) {
 			let transaction = block.transactions[i];
-			if (await Transactions.findOne({hash: transaction.hash})) continue; // ??
+			if (await Transactions.findOne({hash: transaction.hash})) continue; // skip duplication
 			let receipt = await web3.eth.getTransactionReceipt(transaction.hash).catch((e) => { console.error(e.message); reject(); });
 			if (receipt && !transaction.to) {
 				// Contract Creation
 				transaction.to = receipt.contractAddress;
 			}
-			miningReward += transaction.gasPrice * receipt.gasUsed * 1;
+			let fee = transaction.gasPrice * receipt.gasUsed * 1;
+			miningReward += fee;
 
 			let value = transaction.value * 1;
 			if (values[transaction.from]) values[transaction.from] -= value;
 			else {
-				values[transaction.from] = -value;
+				values[transaction.from] = -value - fee;
 			}
 			if (values[transaction.to]) values[transaction.to] += value;
 			else {
@@ -141,6 +144,8 @@ async function getState(blockNum) {
 				nonce: transaction.nonce
 			}).catch((e) => { console.error(e.message) });
 		}
+
+		// console.log(values);
 
 		for (account in values) {
 			// console.log(account);

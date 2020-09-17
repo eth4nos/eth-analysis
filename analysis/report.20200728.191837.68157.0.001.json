@@ -1,0 +1,920 @@
+
+{
+  "header": {
+    "reportVersion": 1,
+    "event": "Allocation failed - JavaScript heap out of memory",
+    "trigger": "FatalError",
+    "filename": "report.20200728.191837.68157.0.001.json",
+    "dumpEventTime": "2020-07-28T19:18:37Z",
+    "dumpEventTimeStamp": "1595931517521",
+    "processId": 68157,
+    "cwd": "/home/jaeykim/eth4nos/eth-analysis/analysis",
+    "commandLine": [
+      "/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node",
+      "/home/jaeykim/eth4nos/eth-analysis/analysis/correctness.js"
+    ],
+    "nodejsVersion": "v12.13.1",
+    "glibcVersionRuntime": "2.27",
+    "glibcVersionCompiler": "2.17",
+    "wordSize": 64,
+    "arch": "x64",
+    "platform": "linux",
+    "componentVersions": {
+      "node": "12.13.1",
+      "v8": "7.7.299.13-node.16",
+      "uv": "1.33.1",
+      "zlib": "1.2.11",
+      "brotli": "1.0.7",
+      "ares": "1.15.0",
+      "modules": "72",
+      "nghttp2": "1.39.2",
+      "napi": "5",
+      "llhttp": "1.1.4",
+      "http_parser": "2.8.0",
+      "openssl": "1.1.1d",
+      "cldr": "35.1",
+      "icu": "64.2",
+      "tz": "2019c",
+      "unicode": "12.1"
+    },
+    "release": {
+      "name": "node",
+      "lts": "Erbium",
+      "headersUrl": "https://nodejs.org/download/release/v12.13.1/node-v12.13.1-headers.tar.gz",
+      "sourceUrl": "https://nodejs.org/download/release/v12.13.1/node-v12.13.1.tar.gz"
+    },
+    "osName": "Linux",
+    "osRelease": "5.3.0-53-generic",
+    "osVersion": "#47~18.04.1-Ubuntu SMP Thu May 7 13:10:50 UTC 2020",
+    "osMachine": "x86_64",
+    "cpus": [
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2884,
+        "user": 9618938000,
+        "nice": 130850300,
+        "sys": 93439100,
+        "idle": 31600282600,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2699,
+        "user": 2773944800,
+        "nice": 134258400,
+        "sys": 97864000,
+        "idle": 38528955700,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2029,
+        "user": 2590074500,
+        "nice": 131362500,
+        "sys": 98810600,
+        "idle": 38731336600,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 3162,
+        "user": 2628847000,
+        "nice": 130474800,
+        "sys": 102681800,
+        "idle": 38694204400,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2560,
+        "user": 4004255200,
+        "nice": 135739700,
+        "sys": 102079700,
+        "idle": 37318266000,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2714,
+        "user": 2284328300,
+        "nice": 130259800,
+        "sys": 102430400,
+        "idle": 39043876300,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 3059,
+        "user": 1837327000,
+        "nice": 125669600,
+        "sys": 101875800,
+        "idle": 39499182200,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 3367,
+        "user": 3445135700,
+        "nice": 121055500,
+        "sys": 99493400,
+        "idle": 37900247700,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 3112,
+        "user": 1531625600,
+        "nice": 206547800,
+        "sys": 151042700,
+        "idle": 39581797400,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2241,
+        "user": 1547171600,
+        "nice": 198084800,
+        "sys": 145397000,
+        "idle": 39581760600,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 1938,
+        "user": 1556117200,
+        "nice": 196027900,
+        "sys": 146977200,
+        "idle": 39581092200,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 3393,
+        "user": 1534505400,
+        "nice": 181572600,
+        "sys": 144278900,
+        "idle": 39621784300,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2485,
+        "user": 1547452700,
+        "nice": 211130200,
+        "sys": 153493000,
+        "idle": 39547231600,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2157,
+        "user": 1570624400,
+        "nice": 201217500,
+        "sys": 152386900,
+        "idle": 39535805900,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2358,
+        "user": 1585318400,
+        "nice": 194116700,
+        "sys": 147423400,
+        "idle": 39541324200,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2080,
+        "user": 1618083100,
+        "nice": 191688300,
+        "sys": 149581400,
+        "idle": 39511110100,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2636,
+        "user": 1409565800,
+        "nice": 36092400,
+        "sys": 65490100,
+        "idle": 40029873100,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 3393,
+        "user": 1363539500,
+        "nice": 32189900,
+        "sys": 62252400,
+        "idle": 40089939600,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 3011,
+        "user": 1369811200,
+        "nice": 28112700,
+        "sys": 60166000,
+        "idle": 40095267100,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2462,
+        "user": 1410227300,
+        "nice": 26224700,
+        "sys": 57861900,
+        "idle": 40056685300,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2220,
+        "user": 1323363200,
+        "nice": 31174600,
+        "sys": 58449700,
+        "idle": 40133931800,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2362,
+        "user": 1327876800,
+        "nice": 177484700,
+        "sys": 76145700,
+        "idle": 39802289000,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2599,
+        "user": 1282505200,
+        "nice": 61174400,
+        "sys": 68416000,
+        "idle": 40105785000,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2861,
+        "user": 1232702600,
+        "nice": 32360200,
+        "sys": 58610400,
+        "idle": 40212174700,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2152,
+        "user": 1457722900,
+        "nice": 31585600,
+        "sys": 62472500,
+        "idle": 40004445200,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2153,
+        "user": 1422312200,
+        "nice": 28192400,
+        "sys": 59736400,
+        "idle": 40043802800,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2105,
+        "user": 1424331000,
+        "nice": 24707300,
+        "sys": 60565200,
+        "idle": 40050055500,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2658,
+        "user": 1424794600,
+        "nice": 22676100,
+        "sys": 59696000,
+        "idle": 40053781400,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2246,
+        "user": 1279486600,
+        "nice": 27098400,
+        "sys": 60553200,
+        "idle": 40187542200,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2712,
+        "user": 1330801200,
+        "nice": 23637600,
+        "sys": 56650800,
+        "idle": 40151752800,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2018,
+        "user": 1255962200,
+        "nice": 23230400,
+        "sys": 53745400,
+        "idle": 40233746300,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2751,
+        "user": 1204579700,
+        "nice": 22904600,
+        "sys": 50828400,
+        "idle": 40289929400,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2790,
+        "user": 1729747000,
+        "nice": 130317200,
+        "sys": 100017600,
+        "idle": 39607304900,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2710,
+        "user": 2397722200,
+        "nice": 132262100,
+        "sys": 94599600,
+        "idle": 38943428600,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2138,
+        "user": 2352293400,
+        "nice": 128442200,
+        "sys": 93680200,
+        "idle": 38996456100,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2874,
+        "user": 2331744200,
+        "nice": 128282700,
+        "sys": 94628900,
+        "idle": 39016711300,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2474,
+        "user": 3094734200,
+        "nice": 116793900,
+        "sys": 97104000,
+        "idle": 38260530800,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2714,
+        "user": 2177119900,
+        "nice": 117574600,
+        "sys": 96158800,
+        "idle": 39178010100,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2501,
+        "user": 3947525400,
+        "nice": 118196300,
+        "sys": 95805600,
+        "idle": 37392106300,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 3381,
+        "user": 4077056800,
+        "nice": 170953700,
+        "sys": 102898300,
+        "idle": 37219138600,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 3303,
+        "user": 1537984200,
+        "nice": 184977300,
+        "sys": 141059600,
+        "idle": 39624403300,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2264,
+        "user": 1482678100,
+        "nice": 188321100,
+        "sys": 138855600,
+        "idle": 39675838900,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 1933,
+        "user": 1476974400,
+        "nice": 189378500,
+        "sys": 139241500,
+        "idle": 39687891000,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 3393,
+        "user": 1466481600,
+        "nice": 191710200,
+        "sys": 143425600,
+        "idle": 39696900600,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2747,
+        "user": 1583108000,
+        "nice": 185240600,
+        "sys": 145218000,
+        "idle": 39564212800,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2071,
+        "user": 1541097900,
+        "nice": 183547200,
+        "sys": 144487700,
+        "idle": 39606307000,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2075,
+        "user": 1539664600,
+        "nice": 183293700,
+        "sys": 144010600,
+        "idle": 39614835300,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2035,
+        "user": 1525076400,
+        "nice": 227642600,
+        "sys": 149461700,
+        "idle": 39555203400,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2346,
+        "user": 1097151900,
+        "nice": 24834000,
+        "sys": 49924000,
+        "idle": 40350629900,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 3392,
+        "user": 1062959400,
+        "nice": 24846600,
+        "sys": 50153600,
+        "idle": 40415871600,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 3038,
+        "user": 1034597500,
+        "nice": 24290400,
+        "sys": 47937900,
+        "idle": 40451245000,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2268,
+        "user": 978659800,
+        "nice": 23382600,
+        "sys": 45327400,
+        "idle": 40509246000,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 1989,
+        "user": 1113187600,
+        "nice": 27581800,
+        "sys": 51218600,
+        "idle": 40355281400,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2833,
+        "user": 1064889400,
+        "nice": 26676200,
+        "sys": 50235800,
+        "idle": 40410400500,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2346,
+        "user": 1160345700,
+        "nice": 25926300,
+        "sys": 55944100,
+        "idle": 40312981900,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2992,
+        "user": 1222509800,
+        "nice": 25807100,
+        "sys": 54809000,
+        "idle": 40244863200,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2315,
+        "user": 1013572300,
+        "nice": 21139800,
+        "sys": 44753200,
+        "idle": 40171252500,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2104,
+        "user": 1078522400,
+        "nice": 21272100,
+        "sys": 51414900,
+        "idle": 40392989700,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2079,
+        "user": 1054477400,
+        "nice": 21551800,
+        "sys": 50437600,
+        "idle": 40423578400,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2445,
+        "user": 1028838400,
+        "nice": 20097000,
+        "sys": 47213900,
+        "idle": 40460605400,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2472,
+        "user": 1142833800,
+        "nice": 21909200,
+        "sys": 50952400,
+        "idle": 40354363600,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2725,
+        "user": 1102621400,
+        "nice": 20832600,
+        "sys": 47788200,
+        "idle": 40399568000,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 1983,
+        "user": 1181650500,
+        "nice": 20576000,
+        "sys": 49531800,
+        "idle": 40321144300,
+        "irq": 0
+      },
+      {
+        "model": "AMD Ryzen Threadripper 2990WX 32-Core Processor",
+        "speed": 2767,
+        "user": 1277717800,
+        "nice": 21821700,
+        "sys": 53619500,
+        "idle": 40199445800,
+        "irq": 0
+      }
+    ],
+    "networkInterfaces": [
+      {
+        "name": "lo",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "127.0.0.1",
+        "netmask": "255.0.0.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "enp4s0",
+        "internal": false,
+        "mac": "0c:c4:7a:a8:85:82",
+        "address": "147.46.123.195",
+        "netmask": "255.255.255.0",
+        "family": "IPv4"
+      },
+      {
+        "name": "lo",
+        "internal": true,
+        "mac": "00:00:00:00:00:00",
+        "address": "::1",
+        "netmask": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff",
+        "family": "IPv6",
+        "scopeid": 0
+      },
+      {
+        "name": "enp4s0",
+        "internal": false,
+        "mac": "0c:c4:7a:a8:85:82",
+        "address": "fe80::5fb7:1dfe:9a62:b9f5",
+        "netmask": "ffff:ffff:ffff:ffff::",
+        "family": "IPv6",
+        "scopeid": 2
+      }
+    ],
+    "host": "ara.snu.ac.kr"
+  },
+  "javascriptStack": {
+    "message": "No stack.",
+    "stack": [
+      "Unavailable."
+    ]
+  },
+  "nativeStack": [
+    {
+      "pc": "0x0000000000b04935",
+      "symbol": "report::TriggerNodeReport(v8::Isolate*, node::Environment*, char const*, char const*, std::string const&, v8::Local<v8::String>) [/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node]"
+    },
+    {
+      "pc": "0x00000000009db9e3",
+      "symbol": "node::OnFatalError(char const*, char const*) [/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000000b39f1e",
+      "symbol": "v8::Utils::ReportOOMFailure(v8::internal::Isolate*, char const*, bool) [/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000000b3a299",
+      "symbol": "v8::internal::V8::FatalProcessOutOfMemory(v8::internal::Isolate*, char const*, bool) [/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000000ce5635",
+      "symbol": " [/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000000ce5cc6",
+      "symbol": "v8::internal::Heap::RecomputeLimits(v8::internal::GarbageCollector) [/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000000cf1b5a",
+      "symbol": "v8::internal::Heap::PerformGarbageCollection(v8::internal::GarbageCollector, v8::GCCallbackFlags) [/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000000cf2a65",
+      "symbol": "v8::internal::Heap::CollectGarbage(v8::internal::AllocationSpace, v8::internal::GarbageCollectionReason, v8::GCCallbackFlags) [/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000000cf5478",
+      "symbol": "v8::internal::Heap::AllocateRawWithRetryOrFail(int, v8::internal::AllocationType, v8::internal::AllocationAlignment) [/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000000cbbda7",
+      "symbol": "v8::internal::Factory::NewFillerObject(int, bool, v8::internal::AllocationType) [/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000000ff1e0b",
+      "symbol": "v8::internal::Runtime_AllocateInYoungGeneration(int, unsigned long*, v8::internal::Isolate*) [/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node]"
+    },
+    {
+      "pc": "0x0000000001374fd9",
+      "symbol": " [/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node]"
+    }
+  ],
+  "javascriptHeap": {
+    "totalMemory": 4301623296,
+    "totalCommittedMemory": 4299585688,
+    "usedMemory": 4293041000,
+    "availableMemory": 46797824,
+    "memoryLimit": 4345298944,
+    "heapSpaces": {
+      "read_only_space": {
+        "memorySize": 262144,
+        "committedMemory": 32568,
+        "capacity": 261872,
+        "used": 32296,
+        "available": 229576
+      },
+      "new_space": {
+        "memorySize": 2097152,
+        "committedMemory": 1215584,
+        "capacity": 1047488,
+        "used": 165976,
+        "available": 881512
+      },
+      "old_space": {
+        "memorySize": 4264931328,
+        "committedMemory": 4264347712,
+        "capacity": 4260411496,
+        "used": 4259447896,
+        "available": 963600
+      },
+      "code_space": {
+        "memorySize": 688128,
+        "committedMemory": 582624,
+        "capacity": 545920,
+        "used": 545920,
+        "available": 0
+      },
+      "map_space": {
+        "memorySize": 1314816,
+        "committedMemory": 1077472,
+        "capacity": 701520,
+        "used": 701520,
+        "available": 0
+      },
+      "large_object_space": {
+        "memorySize": 32280576,
+        "committedMemory": 32280576,
+        "capacity": 32143840,
+        "used": 32143840,
+        "available": 0
+      },
+      "code_large_object_space": {
+        "memorySize": 49152,
+        "committedMemory": 49152,
+        "capacity": 3552,
+        "used": 3552,
+        "available": 0
+      },
+      "new_large_object_space": {
+        "memorySize": 0,
+        "committedMemory": 0,
+        "capacity": 1047488,
+        "used": 0,
+        "available": 1047488
+      }
+    }
+  },
+  "resourceUsage": {
+    "userCpuSeconds": 254.064,
+    "kernelCpuSeconds": 20.1001,
+    "cpuConsumptionPercent": 206.138,
+    "maxRss": 4456816640,
+    "pageFaults": {
+      "IORequired": 18,
+      "IONotRequired": 11198127
+    },
+    "fsActivity": {
+      "reads": 2128,
+      "writes": 40
+    }
+  },
+  "uvthreadResourceUsage": {
+    "userCpuSeconds": 118.761,
+    "kernelCpuSeconds": 5.6869,
+    "cpuConsumptionPercent": 93.5698,
+    "fsActivity": {
+      "reads": 2184,
+      "writes": 40
+    }
+  },
+  "libuv": [
+  ],
+  "environmentVariables": {
+    "NVM_DIR": "/home/jaeykim/.nvm",
+    "LS_COLORS": "rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:",
+    "LD_LIBRARY_PATH": "/usr/local/cuda-10.1/lib64::/usr/lib/cuda:/usr/lib/cuda",
+    "STY": "10169.geth",
+    "LC_MEASUREMENT": "ko_KR.UTF-8",
+    "SSH_CONNECTION": "147.46.116.151 61046 147.46.123.195 2825",
+    "LESSCLOSE": "/usr/bin/lesspipe %s %s",
+    "LC_PAPER": "ko_KR.UTF-8",
+    "LC_MONETARY": "ko_KR.UTF-8",
+    "LANG": "en_US.UTF-8",
+    "DISPLAY": "localhost:10.0",
+    "NODE_OPTIONS": "--max_old_space_size=4096",
+    "OLDPWD": "/home/jaeykim/eth4nos/eth-analysis",
+    "NVM_CD_FLAGS": "",
+    "PYENV_VIRTUALENV_INIT": "1",
+    "PASSWORD": "62476565",
+    "LC_NAME": "ko_KR.UTF-8",
+    "XDG_SESSION_ID": "871",
+    "USER": "jaeykim",
+    "GOPATH": "/home/jaeykim/go",
+    "PWD": "/home/jaeykim/eth4nos/eth-analysis/analysis",
+    "HOME": "/home/jaeykim",
+    "GOROOT": "/usr/local/go",
+    "WINDOW": "3",
+    "LC_CTYPE": "ko_KR.UTF-8",
+    "LC_TERMINAL": "iTerm2",
+    "SSH_CLIENT": "147.46.116.151 61046 2825",
+    "LC_TERMINAL_VERSION": "3.3.12",
+    "XDG_DATA_DIRS": "/usr/local/share:/usr/share:/var/lib/snapd/desktop",
+    "LC_ADDRESS": "ko_KR.UTF-8",
+    "LC_NUMERIC": "ko_KR.UTF-8",
+    "SSH_TTY": "/dev/pts/9",
+    "MAIL": "/var/mail/jaeykim",
+    "SHELL": "/bin/bash",
+    "TERM": "screen-256color-bce",
+    "NVM_BIN": "/home/jaeykim/.nvm/versions/node/v12.13.1/bin",
+    "SHLVL": "2",
+    "PYENV_SHELL": "bash",
+    "LC_TELEPHONE": "ko_KR.UTF-8",
+    "LOGNAME": "jaeykim",
+    "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1001/bus",
+    "XDG_RUNTIME_DIR": "/run/user/1001",
+    "PATH": "/home/jaeykim/.pyenv/plugins/pyenv-virtualenv/shims:/home/jaeykim/.pyenv/shims:/home/jaeykim:/home/jaeykim/.pyenv/bin:/usr/local/cuda-10.1/bin:/home/jaeykim/.nvm/versions/node/v12.13.1/bin:/home/jaeykim/.pyenv/plugins/pyenv-virtualenv/shims:/home/jaeykim/.pyenv/shims:/home/jaeykim:/home/jaeykim/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/go/bin:/home/jaeykim/go/bin:/home/jaeykim/go/src/github.com/ethereum/go-ethereum/build/bin:/home/jaeykim/data/mongo:/home/jaeykim/webdrivers:/usr/local/go/bin:/home/jaeykim/go/bin:/home/jaeykim/go/src/github.com/ethereum/go-ethereum/build/bin:/home/jaeykim/data/mongo:/home/jaeykim/webdrivers",
+    "LC_IDENTIFICATION": "ko_KR.UTF-8",
+    "TERMCAP": "SC|screen-256color-bce|VT 100/ANSI X3.64 virtual terminal:\\\n\t:DO=\\E[%dB:LE=\\E[%dD:RI=\\E[%dC:UP=\\E[%dA:bs:bt=\\E[Z:\\\n\t:cd=\\E[J:ce=\\E[K:cl=\\E[H\\E[J:cm=\\E[%i%d;%dH:ct=\\E[3g:\\\n\t:do=^J:nd=\\E[C:pt:rc=\\E8:rs=\\Ec:sc=\\E7:st=\\EH:up=\\EM:\\\n\t:le=^H:bl=^G:cr=^M:it#8:ho=\\E[H:nw=\\EE:ta=^I:is=\\E)0:\\\n\t:li#71:co#232:am:xn:xv:LP:sr=\\EM:al=\\E[L:AL=\\E[%dL:\\\n\t:cs=\\E[%i%d;%dr:dl=\\E[M:DL=\\E[%dM:dc=\\E[P:DC=\\E[%dP:\\\n\t:im=\\E[4h:ei=\\E[4l:mi:IC=\\E[%d@:ks=\\E[?1h\\E=:\\\n\t:ke=\\E[?1l\\E>:vi=\\E[?25l:ve=\\E[34h\\E[?25h:vs=\\E[34l:\\\n\t:ti=\\E[?1049h:te=\\E[?1049l:us=\\E[4m:ue=\\E[24m:so=\\E[3m:\\\n\t:se=\\E[23m:mb=\\E[5m:md=\\E[1m:mh=\\E[2m:mr=\\E[7m:\\\n\t:me=\\E[m:ms:\\\n\t:Co#8:pa#64:AF=\\E[3%dm:AB=\\E[4%dm:op=\\E[39;49m:AX:\\\n\t:vb=\\Eg:G0:as=\\E(0:ae=\\E(B:\\\n\t:ac=\\140\\140aaffggjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~..--++,,hhII00:\\\n\t:po=\\E[5i:pf=\\E[4i:Km=\\E[M:k0=\\E[10~:k1=\\EOP:k2=\\EOQ:\\\n\t:k3=\\EOR:k4=\\EOS:k5=\\E[15~:k6=\\E[17~:k7=\\E[18~:\\\n\t:k8=\\E[19~:k9=\\E[20~:k;=\\E[21~:F1=\\E[23~:F2=\\E[24~:\\\n\t:F3=\\E[1;2P:F4=\\E[1;2Q:F5=\\E[1;2R:F6=\\E[1;2S:\\\n\t:F7=\\E[15;2~:F8=\\E[17;2~:F9=\\E[18;2~:FA=\\E[19;2~:\\\n\t:FB=\\E[20;2~:FC=\\E[21;2~:FD=\\E[23;2~:FE=\\E[24;2~:kb=:\\\n\t:K2=\\EOE:kB=\\E[Z:kF=\\E[1;2B:kR=\\E[1;2A:*4=\\E[3;2~:\\\n\t:*7=\\E[1;2F:#2=\\E[1;2H:#3=\\E[2;2~:#4=\\E[1;2D:%c=\\E[6;2~:\\\n\t:%e=\\E[5;2~:%i=\\E[1;2C:kh=\\E[1~:@1=\\E[1~:kH=\\E[4~:\\\n\t:@7=\\E[4~:kN=\\E[6~:kP=\\E[5~:kI=\\E[2~:kD=\\E[3~:ku=\\EOA:\\\n\t:kd=\\EOB:kr=\\EOC:kl=\\EOD:km:",
+    "LESSOPEN": "| /usr/bin/lesspipe %s",
+    "LC_TIME": "ko_KR.UTF-8",
+    "_": "/home/jaeykim/.nvm/versions/node/v12.13.1/bin/node"
+  },
+  "userLimits": {
+    "core_file_size_blocks": {
+      "soft": 0,
+      "hard": "unlimited"
+    },
+    "data_seg_size_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "file_size_blocks": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "max_locked_memory_bytes": {
+      "soft": 16777216,
+      "hard": 16777216
+    },
+    "max_memory_size_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "open_files": {
+      "soft": 1048576,
+      "hard": 1048576
+    },
+    "stack_size_bytes": {
+      "soft": 8388608,
+      "hard": "unlimited"
+    },
+    "cpu_time_seconds": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    },
+    "max_user_processes": {
+      "soft": 514881,
+      "hard": 514881
+    },
+    "virtual_memory_kbytes": {
+      "soft": "unlimited",
+      "hard": "unlimited"
+    }
+  },
+  "sharedObjects": [
+    "linux-vdso.so.1",
+    "/lib/x86_64-linux-gnu/libdl.so.2",
+    "/usr/lib/x86_64-linux-gnu/libstdc++.so.6",
+    "/lib/x86_64-linux-gnu/libm.so.6",
+    "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+    "/lib/x86_64-linux-gnu/libpthread.so.0",
+    "/lib/x86_64-linux-gnu/libc.so.6",
+    "/lib64/ld-linux-x86-64.so.2",
+    "/lib/x86_64-linux-gnu/libnss_files.so.2",
+    "/lib/x86_64-linux-gnu/libnss_mdns4_minimal.so.2",
+    "/lib/x86_64-linux-gnu/libnss_dns.so.2",
+    "/lib/x86_64-linux-gnu/libresolv.so.2",
+    "/home/jaeykim/eth4nos/eth-analysis/analysis/node_modules/secp256k1/build/Release/secp256k1.node",
+    "/home/jaeykim/eth4nos/eth-analysis/analysis/node_modules/keccak/build/Release/keccak.node"
+  ]
+}
