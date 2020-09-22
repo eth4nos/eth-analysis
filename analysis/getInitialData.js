@@ -169,9 +169,16 @@ function updateAccount(address, blockNum, value) {
 			resolve();
 		} else {
 			let initialBalance = await web3.eth.getBalance(address, INITIAL_BLOCK).catch((e) => { console.error(e.message); reject(); });
+
+			// @ Luke Park
+			let code = await web3.eth.getCode(address).catch((e) => { console.error(e.message); reject(); });
+			let type = 0;  // EOA
+			if (code != "0x") { type = 1; }  // CA
+
 			await Accounts.updateOne(
 				{ address: address },
-				{ initialBalance: initialBalance,
+				{ type: type,
+				  initialBalance: initialBalance,
 				  activeBlocks: [blockNum],
 				  $push: {transferringValues: { blockNum: blockNum, value: value }}
 				}, { upsert: true, strict: true}

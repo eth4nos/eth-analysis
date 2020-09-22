@@ -6,6 +6,7 @@ mongoose.connect('mongodb://localhost/eth-analysis?maxPoolSize=100', { useNewUrl
 const AccountSchema = new mongoose.Schema({
     address: { type: String, unique: true },
     initialBalance: { type: String, default: "0" },
+    type: { type: Number, default: 0 },
     activeBlocks: [Number],
     transferringValues: [Object],
     restoreBlocks_1w: [Number],
