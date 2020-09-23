@@ -2,8 +2,7 @@
  * Transactions, Active accounts, Initial state
  */
 var cluster = require('cluster');
-var { Accounts_ } = require('./mongoAPIs');
-var Accounts = Accounts_;
+var { Accounts } = require('./mongoAPIs');
 const Web3  = require('web3');
 var fs = require('fs');
 
@@ -51,7 +50,8 @@ if (cluster.isMaster) {
 		active: [0, 0, 0, 0, 0, 0, 0],
 		new: [0, 0, 0, 0, 0, 0, 0],
 		pawn: [0, 0, 0, 0, 0, 0, 0],
-		restored: [0, 0, 0, 0, 0, 0, 0]
+		restored_EOA: [0, 0, 0, 0, 0, 0, 0],
+		restored_CA: [0, 0, 0, 0, 0, 0, 0]
 	}
 
 	var restore_data = new Restore();
@@ -137,12 +137,14 @@ async function updateRestoreBlocks(start, amount, progid, nonce) {
 			active: [0, 0, 0, 0, 0, 0, 0],
 			new: [0, 0, 0, 0, 0, 0, 0],
 			pawn: [0, 0, 0, 0, 0, 0, 0],
-			restored: [0, 0, 0, 0, 0, 0, 0]
+			restored_EOA: [0, 0, 0, 0, 0, 0, 0],
+			restored_CA: [0, 0, 0, 0, 0, 0, 0]
 		}
 		let batch_restore_data = new Restore();
 		for (let i = 0; i < accounts.length; i++) {
 			let account = accounts[i];
 			let address = account.address;
+			let isCA = account.type;
 			let transferringValues = account.transferringValues;
 			let activeBlocks = [...new Set(account.activeBlocks)].sort((a,b) => { return a - b; });
 
@@ -171,7 +173,12 @@ async function updateRestoreBlocks(start, amount, progid, nonce) {
 						restoreBlocks_1w.push(activeBlocks[j] - 1);
 						r_data.upsert(activeBlocks[j] - 1, address);
 						currentBalance = await web3.eth.getBalance(address, activeBlocks[j]) * 1;
-						a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "restored";
+						// restore_CA || restored_EOA
+						if (isCA == 1) {
+							a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "restored_CA";
+						} else {
+							a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "restored_EOA";
+						}
 					} else {
 						currentBalance = 0;
 						a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "pawn";
