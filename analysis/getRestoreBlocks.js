@@ -47,9 +47,12 @@ if (cluster.isMaster) {
 	let workers = 60; // require('os').cpus().length - 1;
 
 	var account_data = {
-		active: [0, 0, 0, 0, 0, 0, 0],
-		new: [0, 0, 0, 0, 0, 0, 0],
-		pawn: [0, 0, 0, 0, 0, 0, 0],
+		active_EOA: [0, 0, 0, 0, 0, 0, 0],
+		active_CA: [0, 0, 0, 0, 0, 0, 0],
+		new_EOA: [0, 0, 0, 0, 0, 0, 0],
+		new_CA: [0, 0, 0, 0, 0, 0, 0],
+		pawn_EOA: [0, 0, 0, 0, 0, 0, 0],
+		pawn_CA: [0, 0, 0, 0, 0, 0, 0],
 		restored_EOA: [0, 0, 0, 0, 0, 0, 0],
 		restored_CA: [0, 0, 0, 0, 0, 0, 0]
 	}
@@ -134,9 +137,12 @@ async function updateRestoreBlocks(start, amount, progid, nonce) {
 	return new Promise(async (resolve, reject) => {
 		let accounts = await Accounts.find().skip(start).limit(amount).catch((e) => { console.error('Accounts', e.message); reject(); });
 		let batch_account_data = {
-			active: [0, 0, 0, 0, 0, 0, 0],
-			new: [0, 0, 0, 0, 0, 0, 0],
-			pawn: [0, 0, 0, 0, 0, 0, 0],
+			active_EOA: [0, 0, 0, 0, 0, 0, 0],
+			active_CA: [0, 0, 0, 0, 0, 0, 0],
+			new_EOA: [0, 0, 0, 0, 0, 0, 0],
+			new_CA: [0, 0, 0, 0, 0, 0, 0],
+			pawn_EOA: [0, 0, 0, 0, 0, 0, 0],
+			pawn_CA: [0, 0, 0, 0, 0, 0, 0],
 			restored_EOA: [0, 0, 0, 0, 0, 0, 0],
 			restored_CA: [0, 0, 0, 0, 0, 0, 0]
 		}
@@ -144,7 +150,7 @@ async function updateRestoreBlocks(start, amount, progid, nonce) {
 		for (let i = 0; i < accounts.length; i++) {
 			let account = accounts[i];
 			let address = account.address;
-			let isCA = account.type;
+			let isEOA = (account.type == 0);
 			let transferringValues = account.transferringValues;
 			let activeBlocks = [...new Set(account.activeBlocks)].sort((a,b) => { return a - b; });
 
@@ -164,7 +170,11 @@ async function updateRestoreBlocks(start, amount, progid, nonce) {
 			// 1 week
 			let restoreBlocks_1w = [];
 			let a_data = [0, 0, 0, 0, 0, 0, 0];
-			a_data[checkpoint(activeBlocks[0], EPOCH_1W)] = "new";
+			if (isEOA) {
+				a_data[checkpoint(activeBlocks[0], EPOCH_1W)] = "new_EOA";
+			} else {	
+				a_data[checkpoint(activeBlocks[0], EPOCH_1W)] = "new_CA";
+			}
 			let r_data = new Restore();
 			for (let j = 1; j < activeBlocks.length; j++) {
 				if (checkpoint(activeBlocks[j], EPOCH_1W) - checkpoint(activeBlocks[j - 1], EPOCH_1W) > 1) {
@@ -173,18 +183,25 @@ async function updateRestoreBlocks(start, amount, progid, nonce) {
 						restoreBlocks_1w.push(activeBlocks[j] - 1);
 						r_data.upsert(activeBlocks[j] - 1, address);
 						currentBalance = await web3.eth.getBalance(address, activeBlocks[j]) * 1;
-						// restore_CA || restored_EOA
-						if (isCA == 1) {
-							a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "restored_CA";
-						} else {
+						if (isEOA) {
 							a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "restored_EOA";
+						} else {
+							a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "restored_CA";
 						}
 					} else {
 						currentBalance = 0;
-						a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "pawn";
+						if (isEOA) {
+							a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "pawn_EOA";
+						} else {
+							a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "pawn_CA";
+						}
 					}
 				} else if (a_data[checkpoint(activeBlocks[j], EPOCH_1W)] == 0) {
-					a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "active";
+					if (isEOA) {
+						a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "active_EOA";
+					} else {
+						a_data[checkpoint(activeBlocks[j], EPOCH_1W)] = "active_CA";
+					}
 				}
 
 				currentBalance += values[activeBlocks[j]];		
